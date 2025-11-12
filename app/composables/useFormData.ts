@@ -10,6 +10,8 @@ export type FormDataState = z.infer<typeof meSchema>;
 const defaultFormData: FormDataState = {
   firstName: "",
   lastName: "",
+  gender: "",
+  academicTitle: "",
   email: "",
   phone: "",
   address: "",
@@ -69,6 +71,8 @@ export function useFormData(
     return {
       firstName: data?.firstName || defaultFormData.firstName,
       lastName: data?.lastName || defaultFormData.lastName,
+      gender: data?.gender || defaultFormData.gender,
+      academicTitle: data?.academicTitle || defaultFormData.academicTitle,
       email: data?.email || defaultFormData.email,
       phone: data?.phone || defaultFormData.phone,
       address: data?.address || defaultFormData.address,

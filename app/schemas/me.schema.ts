@@ -8,6 +8,8 @@ import * as z from "zod";
 export const meSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  gender: z.string().min(1),
+  academicTitle: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(1),
   address: z.string().min(1),

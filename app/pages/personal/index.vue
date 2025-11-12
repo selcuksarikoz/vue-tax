@@ -18,7 +18,7 @@
       <div class="form-container">
         <PersonalForm 
           v-show="activeTab === 'personal'" 
-          :form-data="formData.value"
+          :form-data="formData"
           :is-loading="isSubmitting"
           :error="submitError"
           :success="submitSuccess"
@@ -27,7 +27,7 @@
         />
         <BankDataForm 
           v-show="activeTab === 'bank'" 
-          :form-data="{ bankDetail: formData.value?.bankDetail }"
+          :form-data="{ bankDetail: formData?.bankDetail }"
           :is-loading="isSubmitting"
           :error="submitError"
           :success="submitSuccess"
@@ -36,7 +36,7 @@
         />
         <TaxDataForm 
           v-show="activeTab === 'tax'" 
-          :form-data="{ tax: formData.value?.tax, insurance: formData.value?.insurance }"
+          :form-data="{ tax: formData?.tax, insurance: formData?.insurance }"
           :is-loading="isSubmitting"
           :error="submitError"
           :success="submitSuccess"
@@ -48,7 +48,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" async>
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from '#vue-router'
 import { useMe } from '~/composables/useMe'
@@ -118,6 +118,8 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
     if (formType === 'personal') {
       payload = {
         firstName: formData.value.firstName,
+        academicTitle: formData.value.academicTitle,
+        gender: formData.value.gender,
         lastName: formData.value.lastName,
         email: formData.value.email,
         phone: formData.value.phone,

@@ -188,6 +188,8 @@ const emit = defineEmits<{
 }>()
 
 const countries = ["Germany", "France", "UK", "USA", "Other"]
+const academicTitles = ["No title", "Dr.", "Prof.", "Mr.", "Ms."]
+const genders = ["Male", "Female", "Other"]
 
 const formValid = ref(false)
 
