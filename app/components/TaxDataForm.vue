@@ -1,11 +1,11 @@
 <template>
   <!-- Form container with dark mode background -->
-  <v-container class="form-wrapper pa-6">
+  <v-container class="form-wrapper form-input pa-6">
     <v-form v-model="formValid" @submit.prevent="onSubmit">
       <v-row>
         <!-- Tax Details -->
         <v-col cols="12" md="6">
-          <h3 class="mb-4">Tax details</h3>
+          <h3 class="form-heading">Tax details</h3>
           <v-switch
             v-model="form.noTaxId"
             label="No Tax ID"
@@ -69,7 +69,7 @@
         </v-col>
         <!-- Health Insurance Data -->
         <v-col cols="12" md="6">
-          <h3 class="mb-4">Health insurance data</h3>
+          <h3 class="form-heading">Health insurance data</h3>
           <v-switch
             v-model="form.noSsn"
             label="No SSN"
@@ -343,40 +343,3 @@ async function onSubmit() {
   }
 }
 </script>
-
-<style scoped>
-/**
- * Form styling with dark mode support.
- * Uses Vuetify theme colors for consistency.
- */
-.form-wrapper {
-  background-color: rgba(30, 30, 30, 0.8);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
-
-h3 {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-:deep(.v-text-field) {
-  color: #ffffff;
-}
-
-:deep(.v-select) {
-  color: #ffffff;
-}
-
-:deep(.v-textarea) {
-  color: #ffffff;
-}
-
-:deep(.v-radio-group) {
-  color: #ffffff;
-}
-
-:deep(.v-switch) {
-  color: #ffffff;
-}
-</style>

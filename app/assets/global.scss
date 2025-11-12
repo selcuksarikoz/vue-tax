@@ -1,0 +1,69 @@
+/**
+ * Global styles for the Taxmaro application.
+ * Centralized styling for components to avoid duplication.
+ * Uses CSS custom properties for maintainability and consistency.
+ */
+
+// CSS Custom Properties (Variables)
+:root {
+  --form-bg-color: rgba(30, 30, 30, 0.8);
+  --form-border-radius: 8px;
+  --form-backdrop-blur: 10px;
+  --text-primary: #ffffff;
+  --text-heading-weight: 600;
+  --text-heading-size: 1.25rem;
+}
+
+/**
+ * Form wrapper styling with dark mode background.
+ * Applied to all form containers for consistent look and feel.
+ */
+.form-wrapper {
+  background-color: var(--form-bg-color);
+  border-radius: var(--form-border-radius);
+  padding: 1.5rem; // pa-6 in Vuetify
+  backdrop-filter: blur(var(--form-backdrop-blur));
+}
+
+/**
+ * Form heading styling.
+ * Consistent typography for section headings across all forms.
+ */
+.form-heading {
+  color: var(--text-primary);
+  font-weight: var(--text-heading-weight);
+  font-size: var(--text-heading-size);
+  margin-bottom: 1rem; // mb-4 in Vuetify
+}
+
+/**
+ * Form input styling for dark mode.
+ * Ensures all text fields, selects, and other inputs have proper contrast.
+ */
+.form-input {
+  color: var(--text-primary);
+
+  ::v-deep(.v-text-field) {
+    color: var(--text-primary);
+  }
+
+  ::v-deep(.v-select) {
+    color: var(--text-primary);
+  }
+
+  ::v-deep(.v-textarea) {
+    color: var(--text-primary);
+  }
+
+  ::v-deep(.v-radio-group) {
+    color: var(--text-primary);
+  }
+
+  ::v-deep(.v-switch) {
+    color: var(--text-primary);
+  }
+
+  ::v-deep(.v-input__control) {
+    color: var(--text-primary);
+  }
+}

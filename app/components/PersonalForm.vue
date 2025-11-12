@@ -1,11 +1,11 @@
 <template>
   <!-- Form container with dark mode background -->
-  <v-container class="form-wrapper pa-6">
+  <v-container class="form-wrapper form-input pa-6">
     <v-form v-model="formValid" @submit.prevent="onSubmit">
       <v-row>
         <!-- General Section -->
         <v-col cols="12" md="6">
-          <h3 class="mb-4">General</h3>
+          <h3 class="form-heading">General</h3>
           <v-select
             v-model="form.academicTitle"
             :items="academicTitles"
@@ -87,7 +87,7 @@
         </v-col>
         <!-- Address Section -->
         <v-col cols="12" md="6">
-          <h3 class="mb-4">Address</h3>
+          <h3 class="form-heading">Address</h3>
           <v-select
             v-model="form.country"
             :items="countries"
@@ -272,34 +272,3 @@ async function onSubmit() {
   }
 }
 </script>
-
-<style scoped>
-/**
- * Form styling with dark mode support.
- * Uses Vuetify theme colors for consistency.
- * Form wrapper has semi-transparent background for visibility.
- */
-.form-wrapper {
-  background-color: rgba(30, 30, 30, 0.8);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
-
-h3 {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-/* Ensure inputs and selects have proper dark mode styling */
-:deep(.v-text-field) {
-  color: #ffffff;
-}
-
-:deep(.v-select) {
-  color: #ffffff;
-}
-
-:deep(.v-input__control) {
-  color: #ffffff;
-}
-</style>

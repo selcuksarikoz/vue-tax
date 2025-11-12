@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     },
   },
 
-  css: [],
+  css: ["~/assets/global.scss"],
 
   vuetify: {
     moduleOptions: {

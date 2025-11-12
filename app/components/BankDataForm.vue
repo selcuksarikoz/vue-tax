@@ -1,10 +1,10 @@
 <template>
   <!-- Form container with dark mode background -->
-  <v-container class="form-wrapper pa-6">
+  <v-container class="form-wrapper form-input pa-6">
     <v-form v-model="formValid" @submit.prevent="onSubmit">
       <v-row>
         <v-col cols="12">
-          <h3 class="mb-4">Bank Data</h3>
+          <h3 class="form-heading">Bank Data</h3>
           <v-text-field
             v-model="form.bankName"
             label="Bank name"
@@ -175,28 +175,3 @@ async function onSubmit() {
   }
 }
 </script>
-
-<style scoped>
-/**
- * Form styling with dark mode support.
- * Uses Vuetify theme colors for consistency.
- */
-.form-wrapper {
-  background-color: rgba(30, 30, 30, 0.8);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
-
-h3 {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-:deep(.v-text-field) {
-  color: #ffffff;
-}
-
-:deep(.v-radio-group) {
-  color: #ffffff;
-}
-</style>
