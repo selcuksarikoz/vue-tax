@@ -96,16 +96,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, watch } from "vue"
 import { useMe } from "~/composables/useMe"
+import { useFormValidation } from "~/composables/useFormValidation"
 
 const formValid = ref(false)
 const error = ref("")
 const success = ref(false)
 const isLoading = ref(false)
 
-// Use the composable to fetch initial user data
+// Use composables
 const { data: userData } = useMe()
+const { validatePayload } = useFormValidation()
 
 /**
  * Form state for bank details.
@@ -121,24 +123,30 @@ const form = ref({
 })
 
 /**
- * Load initial bank data from backend once on component mount.
+ * Watch userData for changes and populate form.
+ * This works on both server-side and client-side rendering.
+ * useAsyncData handles SSR automatically.
  */
-onMounted(() => {
-  if (userData.value?.bankDetail) {
-    form.value.bankName = userData.value.bankDetail.bankName || ""
-    form.value.bankBic = userData.value.bankDetail.bankBic || ""
-    form.value.iban = userData.value.bankDetail.iban || ""
-    form.value.id = userData.value.bankDetail.id || ""
-    form.value.bankId = userData.value.bankDetail.bankId || ""
-    form.value.payee = userData.value.bankDetail.payee || ""
-    form.value.paymentMethod = userData.value.bankDetail.paymentMethod || "Cash"
-  }
-})
+watch(
+  () => userData.value?.bankDetail,
+  (bankDetail) => {
+    if (bankDetail) {
+      form.value.bankName = bankDetail.bankName || ""
+      form.value.bankBic = bankDetail.bankBic || ""
+      form.value.iban = bankDetail.iban || ""
+      form.value.id = bankDetail.id || ""
+      form.value.bankId = bankDetail.bankId || ""
+      form.value.payee = bankDetail.payee || ""
+      form.value.paymentMethod = bankDetail.paymentMethod || "Cash"
+    }
+  },
+  { immediate: true }
+)
 
 /**
  * Validates and submits the bank data form.
  * Form validation is handled by Vuetify rules.
- * Only bankDetail fields are submitted to /api/me endpoint.
+ * Schema validation is done via Zod before submission.
  */
 async function onSubmit() {
   error.value = ""
@@ -159,6 +167,16 @@ async function onSubmit() {
       }
     }
 
+    // Validate payload against schema for bankDetail section only
+    const validationResult = await validatePayload("bankDetail", payload.bankDetail)
+    if (!validationResult.success) {
+      error.value = validationResult.errors
+        ?.map(e => `${e.path}: ${e.message}`)
+        .join(", ") || "Validation failed"
+      return
+    }
+
+    // Submit if validation passes
     const { updateMe } = useMe()
     const result = await updateMe(payload)
 

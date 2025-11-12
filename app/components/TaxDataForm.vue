@@ -208,8 +208,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, watch } from "vue"
 import { useMe } from "~/composables/useMe"
+import { useFormValidation } from "~/composables/useFormValidation"
+
 /**
  * Tax Data Form validation is handled by Vuetify rules.
  * Form is disabled for submission until all required fields are valid.
@@ -219,10 +221,10 @@ import { useMe } from "~/composables/useMe"
  * TaxDataForm component displays tax and health insurance data form.
  * 
  * Design decisions:
- * - Initial data is fetched once on mount via useMe() composable
+ * - Initial data is fetched via useMe() composable (SSR-safe)
  * - Form state is preserved in <keep-alive> when switching tabs
  * - Validation and submission only occurs on SAVE button click
- * - No watch() to prevent unexpected data overwrites during user editing
+ * - watch() with immediate: true ensures data loads on both SSR and client-side
  */
 
 const disabilities = ["None", "Mild", "Moderate", "Severe"]
@@ -231,8 +233,9 @@ const error = ref("")
 const success = ref(false)
 const isLoading = ref(false)
 
-// Use the composable to fetch initial user data
+// Use composables
 const { data: userData } = useMe()
+const { validatePayload } = useFormValidation()
 
 /**
  * Form state for tax and insurance fields.
@@ -261,36 +264,42 @@ const form = ref({
 })
 
 /**
- * Load initial tax and insurance data from backend once on component mount.
+ * Watch userData for changes and populate form.
+ * This works on both server-side and client-side rendering.
+ * useAsyncData handles SSR automatically.
  */
-onMounted(() => {
-  if (userData.value) {
-    if (userData.value.tax) {
-      form.value.taxId = userData.value.tax.taxId || ""
-      form.value.noTaxId = userData.value.tax.noTaxId || false
-      form.value.extraJob = userData.value.tax.extraJob || ""
-      form.value.disability = userData.value.tax.disability || "None"
-      form.value.information = userData.value.tax.information || ""
-      form.value.employmentStatus = userData.value.tax.employmentStatus || ""
-      form.value.secondSalary = userData.value.tax.secondSalary || ""
+watch(
+  () => userData.value,
+  (newData) => {
+    if (newData) {
+      if (newData.tax) {
+        form.value.taxId = newData.tax.taxId || ""
+        form.value.noTaxId = newData.tax.noTaxId || false
+        form.value.extraJob = newData.tax.extraJob || ""
+        form.value.disability = newData.tax.disability || "None"
+        form.value.information = newData.tax.information || ""
+        form.value.employmentStatus = newData.tax.employmentStatus || ""
+        form.value.secondSalary = newData.tax.secondSalary || ""
+      }
+      if (newData.insurance) {
+        form.value.ssn = newData.insurance.ssn || ""
+        form.value.noSsn = newData.insurance.noSsn || false
+        form.value.birthCountry = newData.insurance.birthCountry || ""
+        form.value.birthName = newData.insurance.birthName || ""
+        form.value.haveChildren = newData.insurance.haveChildren || ""
+        form.value.healthInsuranceType = newData.insurance.healthInsuranceType || ""
+        form.value.healthInsurance = newData.insurance.healthInsurance || ""
+        form.value.desiredHealthInsuranceCompany = newData.insurance.desiredHealthInsuranceCompany || ""
+        form.value.privateHealthInsuranceName = newData.insurance.privateHealthInsuranceName || ""
+        form.value.privateHealthInsuranceContribution = newData.insurance.privateHealthInsuranceContribution || ""
+        form.value.privateNursingInsuranceContribution = newData.insurance.privateNursingInsuranceContribution || ""
+        form.value.lastPrivateHealthInsurance = newData.insurance.lastPrivateHealthInsurance || ""
+        form.value.requestFromPensionInsurance = newData.insurance.requestFromPensionInsurance || false
+      }
     }
-    if (userData.value.insurance) {
-      form.value.ssn = userData.value.insurance.ssn || ""
-      form.value.noSsn = userData.value.insurance.noSsn || false
-      form.value.birthCountry = userData.value.insurance.birthCountry || ""
-      form.value.birthName = userData.value.insurance.birthName || ""
-      form.value.haveChildren = userData.value.insurance.haveChildren || ""
-      form.value.healthInsuranceType = userData.value.insurance.healthInsuranceType || ""
-      form.value.healthInsurance = userData.value.insurance.healthInsurance || ""
-      form.value.desiredHealthInsuranceCompany = userData.value.insurance.desiredHealthInsuranceCompany || ""
-      form.value.privateHealthInsuranceName = userData.value.insurance.privateHealthInsuranceName || ""
-      form.value.privateHealthInsuranceContribution = userData.value.insurance.privateHealthInsuranceContribution || ""
-      form.value.privateNursingInsuranceContribution = userData.value.insurance.privateNursingInsuranceContribution || ""
-      form.value.lastPrivateHealthInsurance = userData.value.insurance.lastPrivateHealthInsurance || ""
-      form.value.requestFromPensionInsurance = userData.value.insurance.requestFromPensionInsurance || false
-    }
-  }
-})
+  },
+  { immediate: true }
+)
 
 async function onSubmit() {
   error.value = ""
@@ -299,31 +308,54 @@ async function onSubmit() {
 
   try {
     // Prepare payload with all tax and insurance fields
+    const taxPayload = {
+      taxId: form.value.taxId,
+      noTaxId: form.value.noTaxId,
+      extraJob: form.value.extraJob,
+      disability: form.value.disability,
+      information: form.value.information,
+      employmentStatus: form.value.employmentStatus,
+      secondSalary: form.value.secondSalary
+    }
+
+    const insurancePayload = {
+      ssn: form.value.ssn,
+      noSsn: form.value.noSsn,
+      birthCountry: form.value.birthCountry,
+      birthName: form.value.birthName,
+      haveChildren: form.value.haveChildren,
+      healthInsuranceType: form.value.healthInsuranceType,
+      healthInsurance: form.value.healthInsurance,
+      desiredHealthInsuranceCompany: form.value.desiredHealthInsuranceCompany,
+      privateHealthInsuranceName: form.value.privateHealthInsuranceName,
+      privateHealthInsuranceContribution: form.value.privateHealthInsuranceContribution,
+      privateNursingInsuranceContribution: form.value.privateNursingInsuranceContribution,
+      lastPrivateHealthInsurance: form.value.lastPrivateHealthInsurance,
+      requestFromPensionInsurance: form.value.requestFromPensionInsurance
+    }
+
+    // Validate tax section
+    const taxValidation = await validatePayload("tax", taxPayload)
+    if (!taxValidation.success) {
+      error.value = taxValidation.errors
+        ?.map(e => `${e.path}: ${e.message}`)
+        .join(", ") || "Tax validation failed"
+      return
+    }
+
+    // Validate insurance section
+    const insuranceValidation = await validatePayload("", insurancePayload)
+    if (!insuranceValidation.success) {
+      error.value = insuranceValidation.errors
+        ?.map(e => `${e.path}: ${e.message}`)
+        .join(", ") || "Insurance validation failed"
+      return
+    }
+
+    // Submit if all validations pass
     const payload = {
-      tax: {
-        taxId: form.value.taxId,
-        noTaxId: form.value.noTaxId,
-        extraJob: form.value.extraJob,
-        disability: form.value.disability,
-        information: form.value.information,
-        employmentStatus: form.value.employmentStatus,
-        secondSalary: form.value.secondSalary
-      },
-      insurance: {
-        ssn: form.value.ssn,
-        noSsn: form.value.noSsn,
-        birthCountry: form.value.birthCountry,
-        birthName: form.value.birthName,
-        haveChildren: form.value.haveChildren,
-        healthInsuranceType: form.value.healthInsuranceType,
-        healthInsurance: form.value.healthInsurance,
-        desiredHealthInsuranceCompany: form.value.desiredHealthInsuranceCompany,
-        privateHealthInsuranceName: form.value.privateHealthInsuranceName,
-        privateHealthInsuranceContribution: form.value.privateHealthInsuranceContribution,
-        privateNursingInsuranceContribution: form.value.privateNursingInsuranceContribution,
-        lastPrivateHealthInsurance: form.value.lastPrivateHealthInsurance,
-        requestFromPensionInsurance: form.value.requestFromPensionInsurance
-      }
+      tax: taxPayload,
+      insurance: insurancePayload
     }
 
     const { updateMe } = useMe()

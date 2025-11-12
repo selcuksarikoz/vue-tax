@@ -172,8 +172,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, watch } from "vue"
 import { useMe } from "~/composables/useMe"
+import { useFormValidation } from "~/composables/useFormValidation"
 
 const academicTitles = ["No title", "Dr.", "Prof.", "Mr.", "Ms."]
 const genders = ["Male", "Female", "Other"]
@@ -184,8 +185,9 @@ const error = ref("")
 const success = ref(false)
 const isLoading = ref(false)
 
-// Use the composable to fetch initial user data
+// Use composables
 const { data: userData } = useMe()
+const { validatePayload } = useFormValidation()
 
 /**
  * Form state with default values.
@@ -209,28 +211,36 @@ const form = ref({
   additionalAddressInfo: ""
 })
 
-onMounted(() => {
-  // Only load if form is empty (prevents overwriting user edits)
-  if (userData.value && form.value.firstName === "") {
-    form.value = {
-      academicTitle: userData.value.academicTitle || "No title",
-      gender: userData.value.gender || "",
-      firstName: userData.value.firstName || "",
-      lastName: userData.value.lastName || "",
-      dateOfBirth: userData.value.dateOfBirth || "",
-      email: userData.value.email || "",
-      phone: userData.value.phone || "",
-      position: userData.value.position || "",
-      country: userData.value.country || "Germany",
-      postcode: userData.value.zip || "",
-      state: userData.value.state || "",
-      city: userData.value.city || "",
-      street: userData.value.address || "",
-      houseNumber: userData.value.houseNumber || "",
-      additionalAddressInfo: userData.value.additionalAddressInfo || ""
+/**
+ * Watch userData for changes and populate form.
+ * This works on both server-side and client-side rendering.
+ * useAsyncData handles SSR automatically.
+ */
+watch(
+  () => userData.value,
+  (newData) => {
+    if (newData && form.value.firstName === "") {
+      form.value = {
+        academicTitle: newData.academicTitle || "No title",
+        gender: newData.gender || "",
+        firstName: newData.firstName || "",
+        lastName: newData.lastName || "",
+        dateOfBirth: newData.dateOfBirth || "",
+        email: newData.email || "",
+        phone: newData.phone || "",
+        position: newData.position || "",
+        country: newData.country || "Germany",
+        postcode: newData.zip || "",
+        state: newData.state || "",
+        city: newData.city || "",
+        street: newData.address || "",
+        houseNumber: newData.houseNumber || "",
+        additionalAddressInfo: newData.additionalAddressInfo || ""
+      }
     }
-  }
-})
+  },
+  { immediate: true }
+)
 
 async function onSubmit() {
   error.value = ""
@@ -253,7 +263,16 @@ async function onSubmit() {
       address: form.value.street
     }
 
-    // Submit via composable
+    // Validate payload against full schema (no specific key for personal data)
+    const validationResult = await validatePayload(null, payload)
+    if (!validationResult.success) {
+      error.value = validationResult.errors
+        ?.map(e => `${e.path}: ${e.message}`)
+        .join(", ") || "Validation failed"
+      return
+    }
+
+    // Submit if validation passes
     const { updateMe } = useMe()
     const result = await updateMe(payload)
 
