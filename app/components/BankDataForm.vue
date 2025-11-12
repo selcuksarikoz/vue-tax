@@ -1,5 +1,4 @@
 <template>
-  <!-- Form container with dark mode background -->
   <v-container class="form-wrapper form-input pa-6">
     <v-form v-model="formValid" @submit.prevent="onSubmit">
       <v-row>

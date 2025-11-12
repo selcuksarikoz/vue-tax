@@ -1,4 +1,4 @@
-import { ref, type Ref } from "vue";
+import { reactive, type Ref, watch } from "vue";
 import type * as z from "zod";
 import type { meSchema } from "~/schemas/me.schema";
 
@@ -92,13 +92,23 @@ export function useFormData(
     };
   };
 
-  const formData = ref<FormDataState>(initializeFormData());
+  const formData = reactive<FormDataState>(initializeFormData());
+
+  // Watch for changes in userData and update formData accordingly
+  watch(
+    userData,
+    () => {
+      const newData = initializeFormData();
+      Object.assign(formData, newData);
+    },
+    { immediate: false } // immediate: false to avoid double initialization
+  );
 
   /**
    * Handle personal form updates - merge all personal fields
    */
   function handlePersonalUpdate(updates: Record<string, unknown>) {
-    formData.value = { ...formData.value, ...updates };
+    Object.assign(formData, updates);
   }
 
   /**
@@ -106,10 +116,10 @@ export function useFormData(
    */
   function handleBankUpdate(updates: Record<string, unknown>) {
     if (updates.bankDetail) {
-      formData.value.bankDetail = {
-        ...formData.value.bankDetail,
-        ...(updates.bankDetail as Record<string, unknown>),
-      };
+      Object.assign(
+        formData.bankDetail,
+        updates.bankDetail as Record<string, unknown>
+      );
     }
   }
 
@@ -117,24 +127,15 @@ export function useFormData(
    * Handle tax form updates - merge tax and insurance separately
    */
   function handleTaxUpdate(updates: Record<string, unknown>) {
-    const newFormData = { ...formData.value };
-
     if (updates.tax) {
-      newFormData.tax = {
-        ...formData.value.tax,
-        ...(updates.tax as Record<string, unknown>),
-      };
+      Object.assign(formData.tax, updates.tax as Record<string, unknown>);
     }
 
     if (updates.insurance) {
-      newFormData.insurance = {
-        ...formData.value.insurance,
-        ...(updates.insurance as Record<string, unknown>),
-      };
-    }
-
-    if (updates.tax || updates.insurance) {
-      formData.value = newFormData;
+      Object.assign(
+        formData.insurance,
+        updates.insurance as Record<string, unknown>
+      );
     }
   }
 
@@ -142,7 +143,8 @@ export function useFormData(
    * Refresh formData from latest userData (call after server update)
    */
   function refreshFromUserData() {
-    formData.value = initializeFormData();
+    const newData = initializeFormData();
+    Object.assign(formData, newData);
   }
 
   return {

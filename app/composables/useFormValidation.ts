@@ -9,11 +9,7 @@ type SchemaKey = keyof z.infer<typeof meSchema>;
 
 /**
  * useFormValidation composable provides schema-based validation for form data.
- *
- * Purpose:
- * - Validates form data against Zod schema before submission
- * - Supports partial validation for specific schema sections
- * - Returns validation errors in a user-friendly format
+ * It allows validating specific sections of the form or the entire payload
  *
  * Usage:
  * ```typescript

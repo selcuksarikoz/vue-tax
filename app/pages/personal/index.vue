@@ -117,27 +117,27 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
     // Prepare payload based on which form was submitted
     if (formType === 'personal') {
       payload = {
-        firstName: formData.value.firstName,
-        academicTitle: formData.value.academicTitle,
-        gender: formData.value.gender,
-        lastName: formData.value.lastName,
-        email: formData.value.email,
-        phone: formData.value.phone,
-        position: formData.value.position,
-        country: formData.value.country,
-        zip: formData.value.zip,
-        state: formData.value.state,
-        city: formData.value.city,
-        address: formData.value.address
+        firstName: formData.firstName,
+        academicTitle: formData.academicTitle,
+        gender: formData.gender,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        position: formData.position,
+        country: formData.country,
+        zip: formData.zip,
+        state: formData.state,
+        city: formData.city,
+        address: formData.address
       }
     } else if (formType === 'bank') {
       payload = {
-        bankDetail: formData.value.bankDetail
+        bankDetail: formData.bankDetail
       }
     } else if (formType === 'tax') {
       payload = {
-        tax: formData.value.tax,
-        insurance: formData.value.insurance
+        tax: formData.tax,
+        insurance: formData.insurance
       }
     }
 
@@ -146,16 +146,16 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
     if (formType === 'personal') {
       validationResult = await validatePayload(null, payload)
     } else if (formType === 'bank') {
-      validationResult = await validatePayload("bankDetail", formData.value.bankDetail)
+      validationResult = await validatePayload("bankDetail", formData.bankDetail)
     } else {
       // Validate both tax and insurance
-      const taxValidation = await validatePayload("tax", formData.value.tax)
-      const insuranceValidation = await validatePayload("insurance", formData.value.insurance)
+      const taxValidation = await validatePayload("tax", formData.tax)
+      const insuranceValidation = await validatePayload("insurance", formData.insurance)
       validationResult = {
         success: taxValidation.success && insuranceValidation.success,
         errors: [...(taxValidation.errors || []), ...(insuranceValidation.errors || [])]
       }
-      payload = { tax: formData.value.tax, insurance: formData.value.insurance }
+      payload = { tax: formData.tax, insurance: formData.insurance }
     }
 
     if (!validationResult.success) {
