@@ -28,17 +28,16 @@
             @update:model-value="updateField('gender', $event)"
           />
           <v-text-field
-            :model-value="(formData.firstName as string)"
+            :model-value="(personal.firstName as string)"
             label="First name"
             required
             :rules="[v => !!v || 'First name is required', v => v?.length >= 1 || 'First name is required']"
             variant="outlined"
             density="comfortable"
-            class="mt-4"
             @update:model-value="updateField('firstName', $event)"
           />
           <v-text-field
-            :model-value="(formData.lastName as string)"
+            :model-value="(personal.lastName as string)"
             label="Last name"
             required
             :rules="[v => !!v || 'Last name is required', v => v?.length >= 1 || 'Last name is required']"
@@ -48,18 +47,7 @@
             @update:model-value="updateField('lastName', $event)"
           />
           <v-text-field
-            :model-value="(formData.dateOfBirth as string)"
-            label="Date of birth"
-            type="date"
-            required
-            :rules="[v => !!v || 'Date of birth is required']"
-            variant="outlined"
-            density="comfortable"
-            class="mt-4"
-            @update:model-value="updateField('dateOfBirth', $event)"
-          />
-          <v-text-field
-            :model-value="(formData.email as string)"
+            :model-value="(personal.email as string)"
             label="E-mail"
             type="email"
             required
@@ -73,7 +61,7 @@
             @update:model-value="updateField('email', $event)"
           />
           <v-text-field
-            :model-value="(formData.phone as string)"
+            :model-value="(personal.phone as string)"
             label="Phone"
             required
             :rules="[v => !!v || 'Phone is required']"
@@ -83,7 +71,7 @@
             @update:model-value="updateField('phone', $event)"
           />
           <v-text-field
-            :model-value="(formData.position as string)"
+            :model-value="(personal.position as string)"
             label="Position"
             required
             :rules="[v => !!v || 'Position is required']"
@@ -97,7 +85,7 @@
         <v-col cols="12" md="6">
           <h3 class="form-heading">Address</h3>
           <v-select
-            :model-value="(formData.country as string)"
+            :model-value="(personal.country as string)"
             :items="countries"
             label="Country"
             required
@@ -107,17 +95,17 @@
             @update:model-value="updateField('country', $event)"
           />
           <v-text-field
-            :model-value="(formData.postcode as string)"
-            label="Postcode"
+            :model-value="(personal.zip as string)"
+            label="Zip"
             required
-            :rules="[v => !!v || 'Postcode is required']"
+            :rules="[v => !!v || 'Zip is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
-            @update:model-value="updateField('postcode', $event)"
+            @update:model-value="updateField('zip', $event)"
           />
           <v-text-field
-            :model-value="(formData.state as string)"
+            :model-value="(personal.state as string)"
             label="State"
             variant="outlined"
             density="comfortable"
@@ -125,7 +113,7 @@
             @update:model-value="updateField('state', $event)"
           />
           <v-text-field
-            :model-value="(formData.city as string)"
+            :model-value="(personal.city as string)"
             label="City"
             required
             :rules="[v => !!v || 'City is required']"
@@ -135,35 +123,19 @@
             @update:model-value="updateField('city', $event)"
           />
           <v-text-field
-            :model-value="(formData.street as string)"
-            label="Street"
+            :model-value="(personal.address as string)"
+            label="Address"
             required
-            :rules="[v => !!v || 'Street is required']"
+            :rules="[v => !!v || 'Address is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
-            @update:model-value="updateField('street', $event)"
-          />
-          <v-text-field
-            :model-value="(formData.houseNumber as string)"
-            label="House number"
-            variant="outlined"
-            density="comfortable"
-            class="mt-4"
-            @update:model-value="updateField('houseNumber', $event)"
-          />
-          <v-text-field
-            :model-value="(formData.additionalAddressInfo as string)"
-            label="Additional address information"
-            variant="outlined"
-            density="comfortable"
-            class="mt-4"
-            @update:model-value="updateField('additionalAddressInfo', $event)"
+            @update:model-value="updateField('address', $event)"
           />
         </v-col>
       </v-row>
       <v-row class="mt-4">
-        <v-col cols="12">
+        <v-col cols="3" class="ml-auto">
           <!-- Save button is disabled until all required fields are valid -->
           <v-btn 
             type="submit" 
@@ -215,8 +187,6 @@ const emit = defineEmits<{
   'update:form-data': [updates: Record<string, unknown>]
 }>()
 
-const academicTitles = ["No title", "Dr.", "Prof.", "Mr.", "Ms."]
-const genders = ["Male", "Female", "Other"]
 const countries = ["Germany", "France", "UK", "USA", "Other"]
 
 const formValid = ref(false)
@@ -235,6 +205,11 @@ const success = computed(() => props.success)
  * Display loading state from parent
  */
 const isLoading = computed(() => props.isLoading)
+
+/**
+ * Get personal section from formData
+ */
+const personal = computed(() => (props.formData as Record<string, unknown>) || {})
 
 /**
  * Handle input changes - emit to parent to update central formData.

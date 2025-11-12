@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
       <v-row class="mt-4">
-        <v-col cols="12">
+        <v-col cols="3" class="ml-auto">
           <!-- Save button is disabled until all required fields are valid -->
           <v-btn 
             type="submit" 

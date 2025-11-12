@@ -12,6 +12,7 @@ import { meSchema } from "~/schemas/me.schema";
 export function useMe() {
   // Fetch user data once and cache it
   const { data, error, refresh } = useAsyncData("me", () => $fetch("/api/me"));
+
   const loading = ref(false);
 
   /**
