@@ -1,6 +1,12 @@
 <template>
   <v-container class="form-wrapper form-input pa-6">
     <v-form v-model="formValid" @submit.prevent="onSubmit">
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <v-alert v-if="error" type="error" variant="tonal" closable @click:close="error = ''">{{ error }}</v-alert>
+          <v-alert v-if="success" type="success" variant="tonal" closable @click:close="success = ''">Saved successfully!</v-alert>
+        </v-col>
+      </v-row>
       <v-row>
         <!-- Tax Details -->
         <v-col cols="12" md="6">
@@ -214,12 +220,6 @@
           >
             {{ isLoading ? 'Saving...' : 'Save' }}
           </v-btn>
-        </v-col>
-      </v-row>
-      <v-row class="mt-4">
-        <v-col cols="12">
-          <v-alert v-if="error" type="error" variant="tonal" closable @click:close="error = ''">{{ error }}</v-alert>
-          <v-alert v-if="success" type="success" variant="tonal" closable @click:close="success = ''">Saved successfully!</v-alert>
         </v-col>
       </v-row>
     </v-form>
