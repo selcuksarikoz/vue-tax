@@ -1,62 +1,45 @@
 <template>
   <div class="personal-page">
-    <!-- Tab Navigation: tabs are linked to routes for URL changes -->
-    <v-tabs 
+    <!-- Tab Navigation: tabs update query params -->
+    <v-tabs
       grow
       class="tabs-section"
-      :model-value="activeTab" 
+      :model-value="activeTab"
       @update:model-value="navigateToTab"
     >
-      <v-tab value="personal" to="/personal">Personal</v-tab>
-      <v-tab value="bank" to="/personal/bank-data">Bank Data</v-tab>
-      <v-tab value="tax" to="/personal/tax-data">Tax Data</v-tab>
+      <v-tab value="personal">Personal</v-tab>
+      <v-tab value="bank">Bank Data</v-tab>
+      <v-tab value="tax">Tax Data</v-tab>
     </v-tabs>
 
-    <!-- Form Components: All forms are rendered simultaneously and toggled with v-show -->
-    <!-- This ensures <keep-alive> properly caches all components and preserves their internal state -->
-    <keep-alive>
-      <div class="form-container">
-        <PersonalForm 
-          v-show="activeTab === 'personal'" 
-          :form-data="formData"
+    <!-- Dynamic Form Component with lazy loading -->
+    <div class="form-container">
+      <keep-alive>
+        <component
+          :is="currentComponent"
+          :form-data="currentFormData"
           :is-loading="isSubmitting"
           :error="submitError"
           :success="submitSuccess"
-          @update:form-data="handlePersonalUpdate"
-          @submit="() => handleFormSubmit('personal')"
+          @update:form-data="handleUpdate"
+          @submit="handleSubmit"
         />
-        <BankDataForm 
-          v-show="activeTab === 'bank'" 
-          :form-data="{ bankDetail: formData?.bankDetail }"
-          :is-loading="isSubmitting"
-          :error="submitError"
-          :success="submitSuccess"
-          @update:form-data="handleBankUpdate"
-          @submit="() => handleFormSubmit('bank')"
-        />
-        <TaxDataForm 
-          v-show="activeTab === 'tax'" 
-          :form-data="{ tax: formData?.tax, insurance: formData?.insurance }"
-          :is-loading="isSubmitting"
-          :error="submitError"
-          :success="submitSuccess"
-          @update:form-data="handleTaxUpdate"
-          @submit="() => handleFormSubmit('tax')"
-        />
-      </div>
-    </keep-alive>
+      </keep-alive>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" async>
-import { computed, ref } from 'vue'
+import { computed, ref, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from '#vue-router'
 import { useMe } from '~/composables/useMe'
 import { useFormValidation } from '~/composables/useFormValidation'
 import { useFormData } from '~/composables/useFormData'
-import PersonalForm from '~/components/PersonalForm.vue'
-import BankDataForm from '~/components/BankDataForm.vue'
-import TaxDataForm from '~/components/TaxDataForm.vue'
+
+// Lazy load components
+const PersonalForm = defineAsyncComponent(() => import('~/components/PersonalForm.vue'))
+const BankDataForm = defineAsyncComponent(() => import('~/components/BankDataForm.vue'))
+const TaxDataForm = defineAsyncComponent(() => import('~/components/TaxDataForm.vue'))
 
 const route = useRoute()
 const router = useRouter()
@@ -81,25 +64,76 @@ const submitError = ref("")
 const submitSuccess = ref(false)
 
 /**
- * Determine active tab based on current route path.
+ * Determine active tab based on query param.
  */
-const activeTab = computed(() => {
-  const path = route.path
-  if (path.includes('bank')) return 'bank'
-  if (path.includes('tax')) return 'tax'
-  return 'personal'
+const activeTab = computed({
+  get: () => (route.query.tab as string) || 'personal',
+  set: (value: string) => {
+    if (value === 'personal') {
+      router.replace({ query: {} })
+    } else {
+      router.replace({ query: { tab: value } })
+    }
+  }
 })
 
 /**
- * Navigate to the selected tab by updating the route.
+ * Get current component based on active tab
+ */
+const currentComponent = computed(() => {
+  switch (activeTab.value) {
+    case 'bank':
+      return BankDataForm
+    case 'tax':
+      return TaxDataForm
+    default:
+      return PersonalForm
+  }
+})
+
+/**
+ * Get current form data based on active tab
+ */
+const currentFormData = computed(() => {
+  switch (activeTab.value) {
+    case 'bank':
+      return { bankDetail: formData.bankDetail }
+    case 'tax':
+      return { tax: formData.tax, insurance: formData.insurance }
+    default:
+      return formData
+  }
+})
+
+/**
+ * Navigate to the selected tab by updating query params.
  */
 function navigateToTab(tab: string) {
-  const routes: Record<string, string> = {
-    personal: '/personal',
-    bank: '/personal/bank-data',
-    tax: '/personal/tax-data'
+  activeTab.value = tab
+}
+
+/**
+ * Handle form updates based on current tab
+ */
+function handleUpdate(updates: Record<string, unknown>) {
+  switch (activeTab.value) {
+    case 'bank':
+      handleBankUpdate(updates)
+      break
+    case 'tax':
+      handleTaxUpdate(updates)
+      break
+    default:
+      handlePersonalUpdate(updates)
+      break
   }
-  router.push(routes[tab] || '/personal')
+}
+
+/**
+ * Handle form submission based on current tab
+ */
+function handleSubmit() {
+  handleFormSubmit(activeTab.value as 'personal' | 'bank' | 'tax')
 }
 
 /**
@@ -170,8 +204,9 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
 
     if (result.success) {
       submitSuccess.value = true
-      // Refresh formData from updated userData
-      refreshFromUserData()
+      
+      // Refresh formData from updated userData, and i dont need to do it, because useMe already updates userData
+      // refreshFromUserData()
       setTimeout(() => { submitSuccess.value = false }, 3000)
     } else {
       submitError.value = typeof result.error === "string" ? result.error : "Failed to save data."
@@ -182,7 +217,6 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
     isSubmitting.value = false
   }
 }
-
 </script>
 
 <style scoped>
