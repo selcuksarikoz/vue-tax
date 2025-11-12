@@ -1,8 +1,8 @@
-import { me } from "./me";
+import { me } from "./me"
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const result = await me.update(body);
+  const body = await readBody(event)
+  const result = await me.update(body)
 
   if (!result.success) {
     throw createError({
@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
       message: result.message,
       statusMessage: "Bad Request",
       stack: "error",
-    });
+    })
   }
 
-  return result.data;
-});
+  return result.data
+})

@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from "zod"
 
 /**
  * Zod schema for user data validation.
@@ -52,4 +52,4 @@ export const meSchema = z.object({
     haveChildren: z.string().min(1),
     requestFromPensionInsurance: z.boolean(),
   }),
-});
+})

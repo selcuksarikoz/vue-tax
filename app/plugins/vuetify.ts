@@ -8,4 +8,4 @@
 //   })
 // })
 
-export default defineNuxtPlugin(() => {});
+export default defineNuxtPlugin(() => {})

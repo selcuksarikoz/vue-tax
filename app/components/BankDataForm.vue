@@ -3,77 +3,91 @@
     <v-form v-model="formValid" @submit.prevent="onSubmit">
       <v-row class="mt-4">
         <v-col cols="12">
-          <v-alert v-if="error" type="error" variant="tonal" closable @click:close="error = ''">{{ error }}</v-alert>
-          <v-alert v-if="success" type="success" variant="tonal" closable @click:close="success = ''">Saved successfully!</v-alert>
+          <v-alert
+            v-if="error"
+            type="error"
+            variant="tonal"
+            closable
+            @click:close="error = ''"
+            >{{ error }}</v-alert
+          >
+          <v-alert
+            v-if="success"
+            type="success"
+            variant="tonal"
+            closable
+            @click:close="success = ''"
+            >Saved successfully!</v-alert
+          >
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
           <h3 class="form-heading">Bank Data</h3>
           <v-text-field
-            :model-value="(bankDetail.bankName as string)"
+            :model-value="bankDetail.bankName as string"
             label="Bank name"
             required
-            :rules="[v => !!v || 'Bank name is required']"
+            :rules="[(v) => !!v || 'Bank name is required']"
             variant="outlined"
             density="comfortable"
             @update:model-value="updateField('bankName', $event)"
           />
           <v-text-field
-            :model-value="(bankDetail.bankBic as string)"
+            :model-value="bankDetail.bankBic as string"
             label="BIC"
             required
-            :rules="[v => !!v || 'BIC is required']"
+            :rules="[(v) => !!v || 'BIC is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
             @update:model-value="updateField('bankBic', $event)"
           />
           <v-text-field
-            :model-value="(bankDetail.iban as string)"
+            :model-value="bankDetail.iban as string"
             label="IBAN"
             required
-            :rules="[v => !!v || 'IBAN is required']"
+            :rules="[(v) => !!v || 'IBAN is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
             @update:model-value="updateField('iban', $event)"
           />
           <v-text-field
-            :model-value="(bankDetail.id as string)"
+            :model-value="bankDetail.id as string"
             label="Account ID"
             required
-            :rules="[v => !!v || 'Account ID is required']"
+            :rules="[(v) => !!v || 'Account ID is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
             @update:model-value="updateField('id', $event)"
           />
           <v-text-field
-            :model-value="(bankDetail.bankId as string)"
+            :model-value="bankDetail.bankId as string"
             label="Bank ID"
             required
-            :rules="[v => !!v || 'Bank ID is required']"
+            :rules="[(v) => !!v || 'Bank ID is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
             @update:model-value="updateField('bankId', $event)"
           />
           <v-text-field
-            :model-value="(bankDetail.payee as string)"
+            :model-value="bankDetail.payee as string"
             label="Payee"
             required
-            :rules="[v => !!v || 'Payee is required']"
+            :rules="[(v) => !!v || 'Payee is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
             @update:model-value="updateField('payee', $event)"
           />
           <v-radio-group
-            :model-value="(bankDetail.paymentMethod as string)"
+            :model-value="bankDetail.paymentMethod as string"
             label="Payment method"
             required
-            :rules="[v => !!v || 'Payment method is required']"
+            :rules="[(v) => !!v || 'Payment method is required']"
             class="mt-4"
             @update:model-value="updateField('paymentMethod', $event)"
           >
@@ -86,14 +100,14 @@
       <v-row class="mt-4">
         <v-col cols="3" class="ml-auto">
           <!-- Save button is disabled until all required fields are valid -->
-          <v-btn 
-            type="submit" 
-            color="primary" 
-            block 
+          <v-btn
+            type="submit"
+            color="primary"
+            block
             size="large"
             :disabled="!formValid || isLoading"
           >
-            {{ isLoading ? 'Saving...' : 'Save' }}
+            {{ isLoading ? "Saving..." : "Save" }}
           </v-btn>
         </v-col>
       </v-row>
@@ -119,7 +133,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   error: "",
-  success: false
+  success: false,
 })
 
 /**
@@ -127,7 +141,7 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const emit = defineEmits<{
   submit: []
-  'update:form-data': [updates: Record<string, unknown>]
+  "update:form-data": [updates: Record<string, unknown>]
 }>()
 
 const formValid = ref(false)
@@ -150,7 +164,9 @@ const isLoading = computed(() => props.isLoading)
 /**
  * Get bankDetail from formData
  */
-const bankDetail = computed(() => (props.formData.bankDetail as Record<string, unknown>) || {})
+const bankDetail = computed(
+  () => (props.formData.bankDetail as Record<string, unknown>) || {}
+)
 
 /**
  * Handle input changes - emit to parent to update central formData.
@@ -159,8 +175,8 @@ function updateField(field: string, value: unknown) {
   emit("update:form-data", {
     bankDetail: {
       ...bankDetail.value,
-      [field]: value
-    }
+      [field]: value,
+    },
   })
 }
 

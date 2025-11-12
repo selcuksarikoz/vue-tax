@@ -1,11 +1,11 @@
-import { reactive, type Ref, watch } from "vue";
-import type * as z from "zod";
-import type { meSchema } from "~/schemas/me.schema";
+import { reactive, type Ref, watch } from "vue"
+import type * as z from "zod"
+import type { meSchema } from "~/schemas/me.schema"
 
 /**
  * Form data state derived directly from schema
  */
-export type FormDataState = z.infer<typeof meSchema>;
+export type FormDataState = z.infer<typeof meSchema>
 
 const defaultFormData: FormDataState = {
   firstName: "",
@@ -54,7 +54,7 @@ const defaultFormData: FormDataState = {
     lastPrivateHealthInsurance: "",
     requestFromPensionInsurance: false,
   },
-};
+}
 
 /**
  * Composable to manage form data state and form field updates.
@@ -67,7 +67,7 @@ export function useFormData(
    * Initialize formData - merge userData with defaults, creating deep copies
    */
   const initializeFormData = (): FormDataState => {
-    const data = userData.value;
+    const data = userData.value
     return {
       firstName: data?.firstName || defaultFormData.firstName,
       lastName: data?.lastName || defaultFormData.lastName,
@@ -89,26 +89,26 @@ export function useFormData(
       insurance: data?.insurance
         ? { ...data.insurance }
         : { ...defaultFormData.insurance },
-    };
-  };
+    }
+  }
 
-  const formData = reactive<FormDataState>(initializeFormData());
+  const formData = reactive<FormDataState>(initializeFormData())
 
   // Watch for changes in userData and update formData accordingly
   watch(
     userData,
     () => {
-      const newData = initializeFormData();
-      Object.assign(formData, newData);
+      const newData = initializeFormData()
+      Object.assign(formData, newData)
     },
     { immediate: false } // immediate: false to avoid double initialization
-  );
+  )
 
   /**
    * Handle personal form updates - merge all personal fields
    */
   function handlePersonalUpdate(updates: Record<string, unknown>) {
-    Object.assign(formData, updates);
+    Object.assign(formData, updates)
   }
 
   /**
@@ -119,7 +119,7 @@ export function useFormData(
       Object.assign(
         formData.bankDetail,
         updates.bankDetail as Record<string, unknown>
-      );
+      )
     }
   }
 
@@ -128,14 +128,14 @@ export function useFormData(
    */
   function handleTaxUpdate(updates: Record<string, unknown>) {
     if (updates.tax) {
-      Object.assign(formData.tax, updates.tax as Record<string, unknown>);
+      Object.assign(formData.tax, updates.tax as Record<string, unknown>)
     }
 
     if (updates.insurance) {
       Object.assign(
         formData.insurance,
         updates.insurance as Record<string, unknown>
-      );
+      )
     }
   }
 
@@ -143,8 +143,8 @@ export function useFormData(
    * Refresh formData from latest userData (call after server update)
    */
   function refreshFromUserData() {
-    const newData = initializeFormData();
-    Object.assign(formData, newData);
+    const newData = initializeFormData()
+    Object.assign(formData, newData)
   }
 
   return {
@@ -153,5 +153,5 @@ export function useFormData(
     handleBankUpdate,
     handleTaxUpdate,
     refreshFromUserData,
-  };
+  }
 }

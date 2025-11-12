@@ -30,16 +30,22 @@
 </template>
 
 <script setup lang="ts" async>
-import { computed, ref, defineAsyncComponent } from 'vue'
-import { useRoute, useRouter } from '#vue-router'
-import { useMe } from '~/composables/useMe'
-import { useFormValidation } from '~/composables/useFormValidation'
-import { useFormData } from '~/composables/useFormData'
+import { computed, ref, defineAsyncComponent } from "vue"
+import { useRoute, useRouter } from "#vue-router"
+import { useMe } from "~/composables/useMe"
+import { useFormValidation } from "~/composables/useFormValidation"
+import { useFormData } from "~/composables/useFormData"
 
 // Lazy load components
-const PersonalForm = defineAsyncComponent(() => import('~/components/PersonalForm.vue'))
-const BankDataForm = defineAsyncComponent(() => import('~/components/BankDataForm.vue'))
-const TaxDataForm = defineAsyncComponent(() => import('~/components/TaxDataForm.vue'))
+const PersonalForm = defineAsyncComponent(
+  () => import("~/components/PersonalForm.vue")
+)
+const BankDataForm = defineAsyncComponent(
+  () => import("~/components/BankDataForm.vue")
+)
+const TaxDataForm = defineAsyncComponent(
+  () => import("~/components/TaxDataForm.vue")
+)
 
 const route = useRoute()
 const router = useRouter()
@@ -54,7 +60,13 @@ const { validatePayload } = useFormValidation()
 /**
  * Use composable to manage form data state and updates
  */
-const { formData, handlePersonalUpdate, handleBankUpdate, handleTaxUpdate, refreshFromUserData } = useFormData(userData)
+const {
+  formData,
+  handlePersonalUpdate,
+  handleBankUpdate,
+  handleTaxUpdate,
+  refreshFromUserData,
+} = useFormData(userData)
 
 /**
  * Page-level submission state
@@ -67,14 +79,14 @@ const submitSuccess = ref(false)
  * Determine active tab based on query param.
  */
 const activeTab = computed({
-  get: () => (route.query.tab as string) || 'personal',
+  get: () => (route.query.tab as string) || "personal",
   set: (value: string) => {
-    if (value === 'personal') {
+    if (value === "personal") {
       router.replace({ query: {} })
     } else {
       router.replace({ query: { tab: value } })
     }
-  }
+  },
 })
 
 /**
@@ -82,9 +94,9 @@ const activeTab = computed({
  */
 const currentComponent = computed(() => {
   switch (activeTab.value) {
-    case 'bank':
+    case "bank":
       return BankDataForm
-    case 'tax':
+    case "tax":
       return TaxDataForm
     default:
       return PersonalForm
@@ -96,9 +108,9 @@ const currentComponent = computed(() => {
  */
 const currentFormData = computed(() => {
   switch (activeTab.value) {
-    case 'bank':
+    case "bank":
       return { bankDetail: formData.bankDetail }
-    case 'tax':
+    case "tax":
       return { tax: formData.tax, insurance: formData.insurance }
     default:
       return formData
@@ -117,10 +129,10 @@ function navigateToTab(tab: string) {
  */
 function handleUpdate(updates: Record<string, unknown>) {
   switch (activeTab.value) {
-    case 'bank':
+    case "bank":
       handleBankUpdate(updates)
       break
-    case 'tax':
+    case "tax":
       handleTaxUpdate(updates)
       break
     default:
@@ -133,14 +145,14 @@ function handleUpdate(updates: Record<string, unknown>) {
  * Handle form submission based on current tab
  */
 function handleSubmit() {
-  handleFormSubmit(activeTab.value as 'personal' | 'bank' | 'tax')
+  handleFormSubmit(activeTab.value as "personal" | "bank" | "tax")
 }
 
 /**
  * Handle form submission - validate entire form and submit to server.
  * All validation happens here once, not in individual form components.
  */
-async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
+async function handleFormSubmit(formType: "personal" | "bank" | "tax") {
   isSubmitting.value = true
   submitError.value = ""
   submitSuccess.value = false
@@ -149,7 +161,7 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
     let payload: Record<string, unknown> = {}
 
     // Prepare payload based on which form was submitted
-    if (formType === 'personal') {
+    if (formType === "personal") {
       payload = {
         firstName: formData.firstName,
         academicTitle: formData.academicTitle,
@@ -162,40 +174,50 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
         zip: formData.zip,
         state: formData.state,
         city: formData.city,
-        address: formData.address
+        address: formData.address,
       }
-    } else if (formType === 'bank') {
+    } else if (formType === "bank") {
       payload = {
-        bankDetail: formData.bankDetail
+        bankDetail: formData.bankDetail,
       }
-    } else if (formType === 'tax') {
+    } else if (formType === "tax") {
       payload = {
         tax: formData.tax,
-        insurance: formData.insurance
+        insurance: formData.insurance,
       }
     }
 
     // Validate payload against schema
     let validationResult
-    if (formType === 'personal') {
+    if (formType === "personal") {
       validationResult = await validatePayload(null, payload)
-    } else if (formType === 'bank') {
-      validationResult = await validatePayload("bankDetail", formData.bankDetail)
+    } else if (formType === "bank") {
+      validationResult = await validatePayload(
+        "bankDetail",
+        formData.bankDetail
+      )
     } else {
       // Validate both tax and insurance
       const taxValidation = await validatePayload("tax", formData.tax)
-      const insuranceValidation = await validatePayload("insurance", formData.insurance)
+      const insuranceValidation = await validatePayload(
+        "insurance",
+        formData.insurance
+      )
       validationResult = {
         success: taxValidation.success && insuranceValidation.success,
-        errors: [...(taxValidation.errors || []), ...(insuranceValidation.errors || [])]
+        errors: [
+          ...(taxValidation.errors || []),
+          ...(insuranceValidation.errors || []),
+        ],
       }
       payload = { tax: formData.tax, insurance: formData.insurance }
     }
 
     if (!validationResult.success) {
-      submitError.value = validationResult.errors
-        ?.map((e: Record<string, string>) => `${e.path}: ${e.message}`)
-        .join(", ") || "Validation failed"
+      submitError.value =
+        validationResult.errors
+          ?.map((e: Record<string, string>) => `${e.path}: ${e.message}`)
+          .join(", ") || "Validation failed"
       return
     }
 
@@ -204,15 +226,19 @@ async function handleFormSubmit(formType: 'personal' | 'bank' | 'tax') {
 
     if (result.success) {
       submitSuccess.value = true
-      
+
       // Refresh formData from updated userData, and i dont need to do it, because useMe already updates userData
       // refreshFromUserData()
-      setTimeout(() => { submitSuccess.value = false }, 3000)
+      setTimeout(() => {
+        submitSuccess.value = false
+      }, 3000)
     } else {
-      submitError.value = typeof result.error === "string" ? result.error : "Failed to save data."
+      submitError.value =
+        typeof result.error === "string" ? result.error : "Failed to save data."
     }
   } catch (err: unknown) {
-    submitError.value = err instanceof Error ? err.message : "An unexpected error occurred."
+    submitError.value =
+      err instanceof Error ? err.message : "An unexpected error occurred."
   } finally {
     isSubmitting.value = false
   }

@@ -1,6 +1,6 @@
-import { defineConfig } from "vitest/config";
-import vue from "@vitejs/plugin-vue";
-import { fileURLToPath } from "node:url";
+import { defineConfig } from "vitest/config"
+import vue from "@vitejs/plugin-vue"
+import { fileURLToPath } from "node:url"
 
 /**
  * Vitest configuration for unit testing Vue 3 components and composables.
@@ -34,4 +34,4 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./app", import.meta.url)),
     },
   },
-});
+})

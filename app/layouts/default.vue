@@ -13,5 +13,5 @@
 </template>
 
 <script setup lang="ts">
-import NavigationDrawer from "./NavigationDrawer.vue";
+import NavigationDrawer from "./NavigationDrawer.vue"
 </script>

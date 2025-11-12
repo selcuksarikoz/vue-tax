@@ -3,16 +3,14 @@
     <v-container class="pa-6">
       <v-row>
         <v-col cols="12">
-          <h1 class="text-h3 welcome-heading">Welcome To Taxmaro Front End Assessment</h1>
+          <h1 class="text-h3 welcome-heading">
+            Welcome To Taxmaro Front End Assessment
+          </h1>
           <p class="welcome-description">
-            Navigate to the Personal section to manage your information, bank details, and tax/insurance data.
+            Navigate to the Personal section to manage your information, bank
+            details, and tax/insurance data.
           </p>
-          <v-btn 
-            to="/personal" 
-            color="primary" 
-            size="large"
-            class="mt-4"
-          >
+          <v-btn to="/personal" color="primary" size="large" class="mt-4">
             Go to Personal Forms
           </v-btn>
         </v-col>
@@ -48,4 +46,3 @@
   margin-bottom: 1.5rem;
 }
 </style>
-

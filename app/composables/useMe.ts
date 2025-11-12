@@ -1,8 +1,8 @@
-import { ref } from "vue";
-import { useAsyncData } from "#app";
-import type * as z from "zod";
+import { ref } from "vue"
+import { useAsyncData } from "#app"
+import type * as z from "zod"
 
-import { meSchema } from "~/schemas/me.schema";
+import { meSchema } from "~/schemas/me.schema"
 
 /**
  * useMe composable provides methods to fetch and update user data from /api/me.
@@ -11,9 +11,9 @@ import { meSchema } from "~/schemas/me.schema";
  */
 export function useMe() {
   // Fetch user data once and cache it
-  const { data, error, refresh } = useAsyncData("me", () => $fetch("/api/me"));
+  const { data, error, refresh } = useAsyncData("me", () => $fetch("/api/me"))
 
-  const loading = ref(false);
+  const loading = ref(false)
 
   /**
    * Updates user data by sending a PUT request to /api/me.
@@ -22,26 +22,26 @@ export function useMe() {
    * @returns Promise with success/error
    */
   async function updateMe(payload: Partial<z.infer<typeof meSchema>>) {
-    loading.value = true;
+    loading.value = true
     try {
       // Validate payload with Zod schema
-      meSchema.partial().parse(payload);
+      meSchema.partial().parse(payload)
       await $fetch("/api/me", {
         method: "PUT",
         body: payload,
-      });
-      await refresh();
-      return { success: true };
+      })
+      await refresh()
+      return { success: true }
     } catch (e: unknown) {
       if (e && typeof e === "object" && "errors" in e) {
-        return { success: false, error: (e as { errors: unknown }).errors };
+        return { success: false, error: (e as { errors: unknown }).errors }
       }
       return {
         success: false,
         error: e instanceof Error ? e.message : "Unknown error",
-      };
+      }
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   }
 
@@ -51,5 +51,5 @@ export function useMe() {
     loading,
     refresh,
     updateMe,
-  };
+  }
 }
