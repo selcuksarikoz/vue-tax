@@ -7,16 +7,17 @@
         <v-col cols="12" md="6">
           <h3 class="form-heading">General</h3>
           <v-select
-            v-model="form.academicTitle"
+            :model-value="(formData.academicTitle as string)"
             :items="academicTitles"
             label="Academic title"
             required
             :rules="[v => !!v || 'Academic title is required']"
             variant="outlined"
             density="comfortable"
+            @update:model-value="updateField('academicTitle', $event)"
           />
           <v-select
-            v-model="form.gender"
+            :model-value="(formData.gender as string)"
             :items="genders"
             label="Gender"
             required
@@ -24,27 +25,30 @@
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('gender', $event)"
           />
           <v-text-field
-            v-model="form.firstName"
+            :model-value="(formData.firstName as string)"
             label="First name"
             required
             :rules="[v => !!v || 'First name is required', v => v?.length >= 1 || 'First name is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('firstName', $event)"
           />
           <v-text-field
-            v-model="form.lastName"
+            :model-value="(formData.lastName as string)"
             label="Last name"
             required
             :rules="[v => !!v || 'Last name is required', v => v?.length >= 1 || 'Last name is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('lastName', $event)"
           />
           <v-text-field
-            v-model="form.dateOfBirth"
+            :model-value="(formData.dateOfBirth as string)"
             label="Date of birth"
             type="date"
             required
@@ -52,9 +56,10 @@
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('dateOfBirth', $event)"
           />
           <v-text-field
-            v-model="form.email"
+            :model-value="(formData.email as string)"
             label="E-mail"
             type="email"
             required
@@ -65,85 +70,95 @@
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('email', $event)"
           />
           <v-text-field
-            v-model="form.phone"
+            :model-value="(formData.phone as string)"
             label="Phone"
             required
             :rules="[v => !!v || 'Phone is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('phone', $event)"
           />
           <v-text-field
-            v-model="form.position"
+            :model-value="(formData.position as string)"
             label="Position"
             required
             :rules="[v => !!v || 'Position is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('position', $event)"
           />
         </v-col>
         <!-- Address Section -->
         <v-col cols="12" md="6">
           <h3 class="form-heading">Address</h3>
           <v-select
-            v-model="form.country"
+            :model-value="(formData.country as string)"
             :items="countries"
             label="Country"
             required
             :rules="[v => !!v || 'Country is required']"
             variant="outlined"
             density="comfortable"
+            @update:model-value="updateField('country', $event)"
           />
           <v-text-field
-            v-model="form.postcode"
+            :model-value="(formData.postcode as string)"
             label="Postcode"
             required
             :rules="[v => !!v || 'Postcode is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('postcode', $event)"
           />
           <v-text-field
-            v-model="form.state"
+            :model-value="(formData.state as string)"
             label="State"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('state', $event)"
           />
           <v-text-field
-            v-model="form.city"
+            :model-value="(formData.city as string)"
             label="City"
             required
             :rules="[v => !!v || 'City is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('city', $event)"
           />
           <v-text-field
-            v-model="form.street"
+            :model-value="(formData.street as string)"
             label="Street"
             required
             :rules="[v => !!v || 'Street is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('street', $event)"
           />
           <v-text-field
-            v-model="form.houseNumber"
+            :model-value="(formData.houseNumber as string)"
             label="House number"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('houseNumber', $event)"
           />
           <v-text-field
-            v-model="form.additionalAddressInfo"
+            :model-value="(formData.additionalAddressInfo as string)"
             label="Additional address information"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('additionalAddressInfo', $event)"
           />
         </v-col>
       </v-row>
@@ -172,122 +187,66 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue"
-import { useMe } from "~/composables/useMe"
-import { useFormValidation } from "~/composables/useFormValidation"
+import { computed, ref } from "vue"
+
+/**
+ * Props passed from parent page component.
+ * Page manages all form data, validation, and submission.
+ * Form component only renders UI and emits changes.
+ */
+interface Props {
+  formData: Record<string, unknown>
+  isLoading?: boolean
+  error?: string
+  success?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isLoading: false,
+  error: "",
+  success: false
+})
+
+/**
+ * Emit events for parent component.
+ */
+const emit = defineEmits<{
+  submit: []
+  'update:form-data': [updates: Record<string, unknown>]
+}>()
 
 const academicTitles = ["No title", "Dr.", "Prof.", "Mr.", "Ms."]
 const genders = ["Male", "Female", "Other"]
 const countries = ["Germany", "France", "UK", "USA", "Other"]
 
 const formValid = ref(false)
-const error = ref("")
-const success = ref(false)
-const isLoading = ref(false)
-
-// Use composables
-const { data: userData } = useMe()
-const { validatePayload } = useFormValidation()
 
 /**
- * Form state with default values.
- * This is initialized once on mount with backend data if available.
+ * Display error from parent
  */
-const form = ref({
-  academicTitle: "No title",
-  gender: "",
-  firstName: "",
-  lastName: "",
-  dateOfBirth: "",
-  email: "",
-  phone: "",
-  position: "",
-  country: "Germany",
-  postcode: "",
-  state: "",
-  city: "",
-  street: "",
-  houseNumber: "",
-  additionalAddressInfo: ""
-})
+const error = computed(() => props.error)
 
 /**
- * Watch userData for changes and populate form.
- * This works on both server-side and client-side rendering.
- * useAsyncData handles SSR automatically.
+ * Display success from parent
  */
-watch(
-  () => userData.value,
-  (newData) => {
-    if (newData && form.value.firstName === "") {
-      form.value = {
-        academicTitle: newData.academicTitle || "No title",
-        gender: newData.gender || "",
-        firstName: newData.firstName || "",
-        lastName: newData.lastName || "",
-        dateOfBirth: newData.dateOfBirth || "",
-        email: newData.email || "",
-        phone: newData.phone || "",
-        position: newData.position || "",
-        country: newData.country || "Germany",
-        postcode: newData.zip || "",
-        state: newData.state || "",
-        city: newData.city || "",
-        street: newData.address || "",
-        houseNumber: newData.houseNumber || "",
-        additionalAddressInfo: newData.additionalAddressInfo || ""
-      }
-    }
-  },
-  { immediate: true }
-)
+const success = computed(() => props.success)
 
-async function onSubmit() {
-  error.value = ""
-  success.value = false
-  isLoading.value = true
+/**
+ * Display loading state from parent
+ */
+const isLoading = computed(() => props.isLoading)
 
-  try {
-    // Form validation is already done by Vuetify v-form
-    // Prepare payload with only the fields shown in this form
-    const payload = {
-      firstName: form.value.firstName,
-      lastName: form.value.lastName,
-      email: form.value.email,
-      phone: form.value.phone,
-      position: form.value.position,
-      country: form.value.country,
-      zip: form.value.postcode,
-      state: form.value.state,
-      city: form.value.city,
-      address: form.value.street
-    }
+/**
+ * Handle input changes - emit to parent to update central formData.
+ */
+function updateField(field: string, value: unknown) {
+  emit("update:form-data", { [field]: value })
+}
 
-    // Validate payload against full schema (no specific key for personal data)
-    const validationResult = await validatePayload(null, payload)
-    if (!validationResult.success) {
-      error.value = validationResult.errors
-        ?.map(e => `${e.path}: ${e.message}`)
-        .join(", ") || "Validation failed"
-      return
-    }
-
-    // Submit if validation passes
-    const { updateMe } = useMe()
-    const result = await updateMe(payload)
-
-    if (result.success) {
-      success.value = true
-      // Clear success message after 3 seconds
-      setTimeout(() => { success.value = false }, 3000)
-    } else {
-      error.value = typeof result.error === "string" ? result.error : "Failed to save data."
-    }
-  } catch (err: unknown) {
-    // Catch any unexpected errors
-    error.value = err instanceof Error ? err.message : "An unexpected error occurred."
-  } finally {
-    isLoading.value = false
-  }
+/**
+ * Handle submit - parent will validate and call updateMe.
+ */
+function onSubmit() {
+  emit("submit")
 }
 </script>

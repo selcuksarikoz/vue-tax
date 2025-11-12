@@ -6,64 +6,71 @@
         <v-col cols="12">
           <h3 class="form-heading">Bank Data</h3>
           <v-text-field
-            v-model="form.bankName"
+            :model-value="(bankDetail.bankName as string)"
             label="Bank name"
             required
             :rules="[v => !!v || 'Bank name is required']"
             variant="outlined"
             density="comfortable"
+            @update:model-value="updateField('bankName', $event)"
           />
           <v-text-field
-            v-model="form.bankBic"
+            :model-value="(bankDetail.bankBic as string)"
             label="BIC"
             required
             :rules="[v => !!v || 'BIC is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('bankBic', $event)"
           />
           <v-text-field
-            v-model="form.iban"
+            :model-value="(bankDetail.iban as string)"
             label="IBAN"
             required
             :rules="[v => !!v || 'IBAN is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('iban', $event)"
           />
           <v-text-field
-            v-model="form.id"
+            :model-value="(bankDetail.id as string)"
             label="Account ID"
             required
             :rules="[v => !!v || 'Account ID is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('id', $event)"
           />
           <v-text-field
-            v-model="form.bankId"
+            :model-value="(bankDetail.bankId as string)"
             label="Bank ID"
             required
             :rules="[v => !!v || 'Bank ID is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('bankId', $event)"
           />
           <v-text-field
-            v-model="form.payee"
+            :model-value="(bankDetail.payee as string)"
             label="Payee"
             required
             :rules="[v => !!v || 'Payee is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateField('payee', $event)"
           />
           <v-radio-group
-            v-model="form.paymentMethod"
+            :model-value="(bankDetail.paymentMethod as string)"
             label="Payment method"
             required
             :rules="[v => !!v || 'Payment method is required']"
             class="mt-4"
+            @update:model-value="updateField('paymentMethod', $event)"
           >
             <v-radio label="Cash" value="Cash" />
             <v-radio label="Bank Transfer" value="Bank Transfer" />
@@ -96,100 +103,72 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue"
-import { useMe } from "~/composables/useMe"
-import { useFormValidation } from "~/composables/useFormValidation"
-
-const formValid = ref(false)
-const error = ref("")
-const success = ref(false)
-const isLoading = ref(false)
-
-// Use composables
-const { data: userData } = useMe()
-const { validatePayload } = useFormValidation()
+import { computed, ref } from "vue"
 
 /**
- * Form state for bank details.
+ * Props passed from parent page component.
+ * Page manages all form data, validation, and submission.
+ * Form component only renders UI and emits changes.
  */
-const form = ref({
-  bankName: "",
-  bankBic: "",
-  iban: "",
-  id: "",
-  bankId: "",
-  payee: "",
-  paymentMethod: "Cash"
+interface Props {
+  formData: Record<string, unknown>
+  isLoading?: boolean
+  error?: string
+  success?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isLoading: false,
+  error: "",
+  success: false
 })
 
 /**
- * Watch userData for changes and populate form.
- * This works on both server-side and client-side rendering.
- * useAsyncData handles SSR automatically.
+ * Emit events for parent component.
  */
-watch(
-  () => userData.value?.bankDetail,
-  (bankDetail) => {
-    if (bankDetail) {
-      form.value.bankName = bankDetail.bankName || ""
-      form.value.bankBic = bankDetail.bankBic || ""
-      form.value.iban = bankDetail.iban || ""
-      form.value.id = bankDetail.id || ""
-      form.value.bankId = bankDetail.bankId || ""
-      form.value.payee = bankDetail.payee || ""
-      form.value.paymentMethod = bankDetail.paymentMethod || "Cash"
-    }
-  },
-  { immediate: true }
-)
+const emit = defineEmits<{
+  submit: []
+  'update:form-data': [updates: Record<string, unknown>]
+}>()
+
+const formValid = ref(false)
 
 /**
- * Validates and submits the bank data form.
- * Form validation is handled by Vuetify rules.
- * Schema validation is done via Zod before submission.
+ * Display error from parent
  */
-async function onSubmit() {
-  error.value = ""
-  success.value = false
-  isLoading.value = true
+const error = computed(() => props.error)
 
-  try {
-    // Prepare payload with all bankDetail fields
-    const payload = {
-      bankDetail: {
-        bankName: form.value.bankName,
-        bankBic: form.value.bankBic,
-        iban: form.value.iban,
-        id: form.value.id,
-        bankId: form.value.bankId,
-        payee: form.value.payee,
-        paymentMethod: form.value.paymentMethod
-      }
+/**
+ * Display success from parent
+ */
+const success = computed(() => props.success)
+
+/**
+ * Display loading state from parent
+ */
+const isLoading = computed(() => props.isLoading)
+
+/**
+ * Get bankDetail from formData
+ */
+const bankDetail = computed(() => (props.formData.bankDetail as Record<string, unknown>) || {})
+
+/**
+ * Handle input changes - emit to parent to update central formData.
+ */
+function updateField(field: string, value: unknown) {
+  emit("update:form-data", {
+    bankDetail: {
+      ...bankDetail.value,
+      [field]: value
     }
+  })
+}
 
-    // Validate payload against schema for bankDetail section only
-    const validationResult = await validatePayload("bankDetail", payload.bankDetail)
-    if (!validationResult.success) {
-      error.value = validationResult.errors
-        ?.map(e => `${e.path}: ${e.message}`)
-        .join(", ") || "Validation failed"
-      return
-    }
-
-    // Submit if validation passes
-    const { updateMe } = useMe()
-    const result = await updateMe(payload)
-
-    if (result.success) {
-      success.value = true
-      setTimeout(() => { success.value = false }, 3000)
-    } else {
-      error.value = typeof result.error === "string" ? result.error : "Failed to save data."
-    }
-  } catch (err: unknown) {
-    error.value = err instanceof Error ? err.message : "An unexpected error occurred."
-  } finally {
-    isLoading.value = false
-  }
+/**
+ * Handle submit - parent will validate and call updateMe.
+ */
+function onSubmit() {
+  emit("submit")
 }
 </script>

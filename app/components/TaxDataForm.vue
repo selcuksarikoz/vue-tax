@@ -7,176 +7,196 @@
         <v-col cols="12" md="6">
           <h3 class="form-heading">Tax details</h3>
           <v-switch
-            v-model="form.noTaxId"
+            :model-value="(tax.noTaxId as boolean)"
             label="No Tax ID"
             color="primary"
             class="mb-2"
+            @update:model-value="updateTaxField('noTaxId', $event)"
           />
           <v-text-field
-            v-model="form.taxId"
+            :model-value="(tax.taxId as string)"
             label="Tax ID"
-            :disabled="form.noTaxId"
+            :disabled="(tax.noTaxId as boolean)"
             maxlength="11"
-            :rules="[v => form.noTaxId || !!v || 'Tax ID is required if not disabled']"
+            :rules="[(tax.noTaxId as boolean) || !!tax.taxId || 'Tax ID is required if not disabled']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateTaxField('taxId', $event)"
           />
           <v-select
-            v-model="form.disability"
+            :model-value="(tax.disability as string)"
             :items="disabilities"
             label="Degree of disability"
             :rules="[v => !!v || 'Disability degree is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateTaxField('disability', $event)"
           />
           <v-radio-group
-            v-model="form.extraJob"
+            :model-value="(tax.extraJob as string)"
             label="Do you have more than one employment?"
             :rules="[v => !!v || 'Employment status is required']"
             class="mt-4"
+            @update:model-value="updateTaxField('extraJob', $event)"
           >
             <v-radio label="Yes" value="Yes" />
             <v-radio label="No" value="No" />
           </v-radio-group>
           <v-textarea
-            v-model="form.information"
+            :model-value="(tax.information as string)"
             label="Extra Tax or Employment information"
             :rules="[v => !!v || 'Employment information is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateTaxField('information', $event)"
           />
           <v-text-field
-            v-model="form.employmentStatus"
+            :model-value="(tax.employmentStatus as string)"
             label="Employment status"
             required
             :rules="[v => !!v || 'Employment status is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateTaxField('employmentStatus', $event)"
           />
           <v-text-field
-            v-model="form.secondSalary"
+            :model-value="(tax.secondSalary as string)"
             label="Second salary"
             required
             :rules="[v => !!v || 'Second salary is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateTaxField('secondSalary', $event)"
           />
         </v-col>
         <!-- Health Insurance Data -->
         <v-col cols="12" md="6">
           <h3 class="form-heading">Health insurance data</h3>
           <v-switch
-            v-model="form.noSsn"
+            :model-value="(insurance.noSsn as boolean)"
             label="No SSN"
             color="primary"
             class="mb-2"
+            @update:model-value="updateInsuranceField('noSsn', $event)"
           />
           <v-text-field
-            v-model="form.ssn"
+            :model-value="(insurance.ssn as string)"
             label="SSN"
-            :disabled="form.noSsn"
+            :disabled="(insurance.noSsn as boolean)"
             maxlength="12"
-            :rules="[v => form.noSsn || !!v || 'SSN is required if not disabled']"
+            :rules="[(insurance.noSsn as boolean) || !!insurance.ssn || 'SSN is required if not disabled']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('ssn', $event)"
           />
           <v-text-field
-            v-model="form.birthCountry"
+            :model-value="(insurance.birthCountry as string)"
             label="Place of birth"
             :rules="[v => !!v || 'Place of birth is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('birthCountry', $event)"
           />
           <v-text-field
-            v-model="form.birthName"
+            :model-value="(insurance.birthName as string)"
             label="Birth name"
             required
             :rules="[v => !!v || 'Birth name is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('birthName', $event)"
           />
           <v-text-field
-            v-model="form.healthInsuranceType"
+            :model-value="(insurance.healthInsuranceType as string)"
             label="Health insurance type"
             required
             :rules="[v => !!v || 'Health insurance type is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('healthInsuranceType', $event)"
           />
           <v-text-field
-            v-model="form.healthInsurance"
+            :model-value="(insurance.healthInsurance as string)"
             label="Health insurance"
             required
             :rules="[v => !!v || 'Health insurance is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('healthInsurance', $event)"
           />
           <v-text-field
-            v-model="form.desiredHealthInsuranceCompany"
+            :model-value="(insurance.desiredHealthInsuranceCompany as string)"
             label="Desired health insurance company"
             required
             :rules="[v => !!v || 'Desired health insurance company is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('desiredHealthInsuranceCompany', $event)"
           />
           <v-text-field
-            v-model="form.privateHealthInsuranceName"
+            :model-value="(insurance.privateHealthInsuranceName as string)"
             label="Private health insurance name"
             required
             :rules="[v => !!v || 'Private health insurance name is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('privateHealthInsuranceName', $event)"
           />
           <v-text-field
-            v-model="form.privateHealthInsuranceContribution"
+            :model-value="(insurance.privateHealthInsuranceContribution as string)"
             label="Private health insurance contribution"
             required
             :rules="[v => !!v || 'Private health insurance contribution is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('privateHealthInsuranceContribution', $event)"
           />
           <v-text-field
-            v-model="form.privateNursingInsuranceContribution"
+            :model-value="(insurance.privateNursingInsuranceContribution as string)"
             label="Private nursing insurance contribution"
             required
             :rules="[v => !!v || 'Private nursing insurance contribution is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('privateNursingInsuranceContribution', $event)"
           />
           <v-text-field
-            v-model="form.lastPrivateHealthInsurance"
+            :model-value="(insurance.lastPrivateHealthInsurance as string)"
             label="Last private health insurance"
             required
             :rules="[v => !!v || 'Last private health insurance is required']"
             variant="outlined"
             density="comfortable"
             class="mt-4"
+            @update:model-value="updateInsuranceField('lastPrivateHealthInsurance', $event)"
           />
           <v-switch
-            v-model="form.requestFromPensionInsurance"
+            :model-value="(insurance.requestFromPensionInsurance as boolean)"
             label="Request from pension insurance"
             color="primary"
             class="mt-4"
+            @update:model-value="updateInsuranceField('requestFromPensionInsurance', $event)"
           />
           <v-radio-group
-            v-model="form.haveChildren"
+            :model-value="(insurance.haveChildren as string)"
             label="Do you have children?"
             :rules="[v => !!v || 'Children status is required']"
             class="mt-4"
+            @update:model-value="updateInsuranceField('haveChildren', $event)"
           >
             <v-radio label="Yes" value="Yes" />
             <v-radio label="No" value="No" />
@@ -208,170 +228,86 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue"
-import { useMe } from "~/composables/useMe"
-import { useFormValidation } from "~/composables/useFormValidation"
+import { computed, ref } from "vue"
 
 /**
- * Tax Data Form validation is handled by Vuetify rules.
- * Form is disabled for submission until all required fields are valid.
+ * Props passed from parent page component.
+ * Page manages all form data, validation, and submission.
+ * Form component only renders UI and emits changes.
  */
+interface Props {
+  formData: Record<string, unknown>
+  isLoading?: boolean
+  error?: string
+  success?: boolean
+}
 
-/**
- * TaxDataForm component displays tax and health insurance data form.
- * 
- * Design decisions:
- * - Initial data is fetched via useMe() composable (SSR-safe)
- * - Form state is preserved in <keep-alive> when switching tabs
- * - Validation and submission only occurs on SAVE button click
- * - watch() with immediate: true ensures data loads on both SSR and client-side
- */
-
-const disabilities = ["None", "Mild", "Moderate", "Severe"]
-const formValid = ref(false)
-const error = ref("")
-const success = ref(false)
-const isLoading = ref(false)
-
-// Use composables
-const { data: userData } = useMe()
-const { validatePayload } = useFormValidation()
-
-/**
- * Form state for tax and insurance fields.
- */
-const form = ref({
-  taxId: "",
-  noTaxId: false,
-  extraJob: "",
-  disability: "None",
-  information: "",
-  employmentStatus: "",
-  secondSalary: "",
-  ssn: "",
-  noSsn: false,
-  birthCountry: "",
-  birthName: "",
-  haveChildren: "",
-  healthInsuranceType: "",
-  healthInsurance: "",
-  desiredHealthInsuranceCompany: "",
-  privateHealthInsuranceName: "",
-  privateHealthInsuranceContribution: "",
-  privateNursingInsuranceContribution: "",
-  lastPrivateHealthInsurance: "",
-  requestFromPensionInsurance: false
+const props = withDefaults(defineProps<Props>(), {
+  isLoading: false,
+  error: "",
+  success: false
 })
 
 /**
- * Watch userData for changes and populate form.
- * This works on both server-side and client-side rendering.
- * useAsyncData handles SSR automatically.
+ * Emit events for parent component.
  */
-watch(
-  () => userData.value,
-  (newData) => {
-    if (newData) {
-      if (newData.tax) {
-        form.value.taxId = newData.tax.taxId || ""
-        form.value.noTaxId = newData.tax.noTaxId || false
-        form.value.extraJob = newData.tax.extraJob || ""
-        form.value.disability = newData.tax.disability || "None"
-        form.value.information = newData.tax.information || ""
-        form.value.employmentStatus = newData.tax.employmentStatus || ""
-        form.value.secondSalary = newData.tax.secondSalary || ""
-      }
-      if (newData.insurance) {
-        form.value.ssn = newData.insurance.ssn || ""
-        form.value.noSsn = newData.insurance.noSsn || false
-        form.value.birthCountry = newData.insurance.birthCountry || ""
-        form.value.birthName = newData.insurance.birthName || ""
-        form.value.haveChildren = newData.insurance.haveChildren || ""
-        form.value.healthInsuranceType = newData.insurance.healthInsuranceType || ""
-        form.value.healthInsurance = newData.insurance.healthInsurance || ""
-        form.value.desiredHealthInsuranceCompany = newData.insurance.desiredHealthInsuranceCompany || ""
-        form.value.privateHealthInsuranceName = newData.insurance.privateHealthInsuranceName || ""
-        form.value.privateHealthInsuranceContribution = newData.insurance.privateHealthInsuranceContribution || ""
-        form.value.privateNursingInsuranceContribution = newData.insurance.privateNursingInsuranceContribution || ""
-        form.value.lastPrivateHealthInsurance = newData.insurance.lastPrivateHealthInsurance || ""
-        form.value.requestFromPensionInsurance = newData.insurance.requestFromPensionInsurance || false
-      }
+const emit = defineEmits<{
+  submit: []
+  'update:form-data': [updates: Record<string, unknown>]
+}>()
+
+const disabilities = ["None", "Mild", "Moderate", "Severe"]
+const formValid = ref(false)
+
+/**
+ * Display error from parent
+ */
+const error = computed(() => props.error)
+
+/**
+ * Display success from parent
+ */
+const success = computed(() => props.success)
+
+/**
+ * Display loading state from parent
+ */
+const isLoading = computed(() => props.isLoading)
+
+/**
+ * Get tax and insurance sections from formData
+ */
+const tax = computed(() => (props.formData.tax as Record<string, unknown>) || {})
+const insurance = computed(() => (props.formData.insurance as Record<string, unknown>) || {})
+
+/**
+ * Handle input changes - emit to parent to update central formData.
+ */
+function updateTaxField(field: string, value: unknown) {
+  emit("update:form-data", {
+    tax: {
+      ...tax.value,
+      [field]: value
     }
-  },
-  { immediate: true }
-)
+  })
+}
 
-async function onSubmit() {
-  error.value = ""
-  success.value = false
-  isLoading.value = true
-
-  try {
-    // Prepare payload with all tax and insurance fields
-    const taxPayload = {
-      taxId: form.value.taxId,
-      noTaxId: form.value.noTaxId,
-      extraJob: form.value.extraJob,
-      disability: form.value.disability,
-      information: form.value.information,
-      employmentStatus: form.value.employmentStatus,
-      secondSalary: form.value.secondSalary
+/**
+ * Handle insurance field changes - emit to parent to update central formData.
+ */
+function updateInsuranceField(field: string, value: unknown) {
+  emit("update:form-data", {
+    insurance: {
+      ...insurance.value,
+      [field]: value
     }
+  })
+}
 
-    const insurancePayload = {
-      ssn: form.value.ssn,
-      noSsn: form.value.noSsn,
-      birthCountry: form.value.birthCountry,
-      birthName: form.value.birthName,
-      haveChildren: form.value.haveChildren,
-      healthInsuranceType: form.value.healthInsuranceType,
-      healthInsurance: form.value.healthInsurance,
-      desiredHealthInsuranceCompany: form.value.desiredHealthInsuranceCompany,
-      privateHealthInsuranceName: form.value.privateHealthInsuranceName,
-      privateHealthInsuranceContribution: form.value.privateHealthInsuranceContribution,
-      privateNursingInsuranceContribution: form.value.privateNursingInsuranceContribution,
-      lastPrivateHealthInsurance: form.value.lastPrivateHealthInsurance,
-      requestFromPensionInsurance: form.value.requestFromPensionInsurance
-    }
-
-    // Validate tax section
-    const taxValidation = await validatePayload("tax", taxPayload)
-    if (!taxValidation.success) {
-      error.value = taxValidation.errors
-        ?.map(e => `${e.path}: ${e.message}`)
-        .join(", ") || "Tax validation failed"
-      return
-    }
-
-    // Validate insurance section
-    const insuranceValidation = await validatePayload("", insurancePayload)
-    if (!insuranceValidation.success) {
-      error.value = insuranceValidation.errors
-        ?.map(e => `${e.path}: ${e.message}`)
-        .join(", ") || "Insurance validation failed"
-      return
-    }
-
-    // Submit if all validations pass
-    const payload = {
-      tax: taxPayload,
-      insurance: insurancePayload
-    }
-
-    const { updateMe } = useMe()
-    const result = await updateMe(payload)
-
-    if (result.success) {
-      success.value = true
-      setTimeout(() => { success.value = false }, 3000)
-    } else {
-      error.value = typeof result.error === "string" ? result.error : "Failed to save data."
-    }
-  } catch (err: unknown) {
-    // Catch any unexpected errors
-    error.value = err instanceof Error ? err.message : "An unexpected error occurred."
-  } finally {
-    isLoading.value = false
-  }
+/**
+ * Handle submit - parent will validate and call updateMe.
+ */
+function onSubmit() {
+  emit("submit")
 }
 </script>
