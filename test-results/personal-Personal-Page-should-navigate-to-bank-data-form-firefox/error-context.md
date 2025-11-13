@@ -1,0 +1,109 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e7]: Taxmaro Front End Assessment
+    - navigation [ref=e8]:
+      - list [ref=e10]:
+        - link "Home" [ref=e11] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e13]: Home
+        - link "Personal Data" [ref=e14] [cursor=pointer]:
+          - /url: /personal
+          - generic [ref=e16]: Personal Data
+    - main [ref=e17]:
+      - generic [ref=e19]:
+        - tablist [ref=e20]:
+          - generic [ref=e22]:
+            - tab "Personal" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: Personal
+            - tab "Bank Data" [active] [selected] [ref=e25] [cursor=pointer]:
+              - generic [ref=e26]: Bank Data
+            - tab "Tax Data" [ref=e27] [cursor=pointer]:
+              - generic [ref=e28]: Tax Data
+        - generic [ref=e33]:
+          - generic [ref=e37]:
+            - heading "Bank Data" [level=3] [ref=e38]
+            - generic [ref=e39]:
+              - generic [ref=e41]:
+                - textbox "Bank name Bank name" [ref=e43]: "213"
+                - generic:
+                  - generic:
+                    - generic: Bank name
+              - alert [ref=e44]
+            - generic [ref=e46]:
+              - generic [ref=e48]:
+                - textbox "BIC BIC" [ref=e50]: "123"
+                - generic:
+                  - generic:
+                    - generic: BIC
+              - alert [ref=e51]
+            - generic [ref=e53]:
+              - generic [ref=e55]:
+                - textbox "IBAN IBAN" [ref=e57]: "123"
+                - generic:
+                  - generic:
+                    - generic: IBAN
+              - alert [ref=e58]
+            - generic [ref=e60]:
+              - generic [ref=e62]:
+                - textbox "Account ID Account ID" [ref=e64]: "123"
+                - generic:
+                  - generic:
+                    - generic: Account ID
+              - alert [ref=e65]
+            - generic [ref=e67]:
+              - generic [ref=e69]:
+                - textbox "Bank ID Bank ID" [ref=e71]: "123"
+                - generic:
+                  - generic:
+                    - generic: Bank ID
+              - alert [ref=e72]
+            - generic [ref=e74]:
+              - generic [ref=e76]:
+                - textbox "Payee Payee" [ref=e78]: "123"
+                - generic:
+                  - generic:
+                    - generic: Payee
+              - alert [ref=e79]
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e83]: Payment method
+                - radiogroup "Payment method" [ref=e84]:
+                  - generic [ref=e85]:
+                    - generic [ref=e87]:
+                      - generic [ref=e88]: 󰐽
+                      - radio "Cash" [ref=e89] [cursor=pointer]
+                    - generic [ref=e90] [cursor=pointer]: Cash
+                  - generic [ref=e91]:
+                    - generic [ref=e93]:
+                      - generic [ref=e94]: 󰐾
+                      - radio "Bank Transfer" [checked] [ref=e95] [cursor=pointer]
+                    - generic [ref=e96] [cursor=pointer]: Bank Transfer
+                  - generic [ref=e97]:
+                    - generic [ref=e99]:
+                      - generic [ref=e100]: 󰐽
+                      - radio "Cheque" [ref=e101] [cursor=pointer]
+                    - generic [ref=e102] [cursor=pointer]: Cheque
+              - alert [ref=e103]
+          - button "Save" [ref=e107] [cursor=pointer]:
+            - generic [ref=e108]: Save
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e109]:
+    - button "Toggle Nuxt DevTools" [ref=e110] [cursor=pointer]:
+      - img [ref=e111]
+    - generic "Page load time" [ref=e114]:
+      - generic [ref=e115]: "86"
+      - generic [ref=e116]: ms
+    - button "Toggle Component Inspector" [ref=e118] [cursor=pointer]:
+      - img [ref=e119]
+```

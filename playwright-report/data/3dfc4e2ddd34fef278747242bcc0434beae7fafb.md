@@ -1,0 +1,175 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e7]: Taxmaro Front End Assessment
+    - navigation [ref=e8]:
+      - list [ref=e10]:
+        - link "Home" [ref=e11] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e13]: Home
+        - link "Personal Data" [ref=e14] [cursor=pointer]:
+          - /url: /personal
+          - generic [ref=e16]: Personal Data
+    - main [ref=e17]:
+      - generic [ref=e19]:
+        - tablist [ref=e20]:
+          - generic [ref=e22]:
+            - tab "Personal" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: Personal
+            - tab "Bank Data" [ref=e25] [cursor=pointer]:
+              - generic [ref=e26]: Bank Data
+            - tab "Tax Data" [active] [selected] [ref=e27] [cursor=pointer]:
+              - generic [ref=e28]: Tax Data
+        - generic [ref=e33]:
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - heading "Tax details" [level=3] [ref=e38]
+              - generic [ref=e39]:
+                - generic [ref=e41]:
+                  - checkbox "No Tax ID" [ref=e45] [cursor=pointer]
+                  - generic [ref=e46] [cursor=pointer]: No Tax ID
+                - alert [ref=e47]
+              - generic [ref=e49]:
+                - generic [ref=e52]:
+                  - generic: Tax ID
+                  - textbox "Tax ID Tax ID" [ref=e53]
+                - alert [ref=e54]
+              - generic [ref=e56]:
+                - combobox [ref=e58] [cursor=pointer]:
+                  - generic [ref=e60]:
+                    - combobox "Open"
+                  - generic [ref=e62]: 󰍝
+                  - generic:
+                    - generic:
+                      - generic: Degree of disability
+                - alert [ref=e63]
+              - generic [ref=e65]:
+                - generic [ref=e66]:
+                  - generic [ref=e67]: Do you have more than one employment?
+                  - radiogroup "Do you have more than one employment?" [ref=e68]:
+                    - generic [ref=e69]:
+                      - generic [ref=e71]:
+                        - generic [ref=e72]: 󰐽
+                        - radio "Yes" [ref=e73] [cursor=pointer]
+                      - generic [ref=e74] [cursor=pointer]: "Yes"
+                    - generic [ref=e75]:
+                      - generic [ref=e77]:
+                        - generic [ref=e78]: 󰐽
+                        - radio "No" [ref=e79] [cursor=pointer]
+                      - generic [ref=e80] [cursor=pointer]: "No"
+                - alert [ref=e81]
+              - generic [ref=e83]:
+                - generic [ref=e86]:
+                  - generic: Extra Tax or Employment information
+                  - textbox "Extra Tax or Employment information Extra Tax or Employment information" [ref=e87]
+                - alert [ref=e88]
+              - generic [ref=e90]:
+                - generic [ref=e93]:
+                  - generic: Employment status
+                  - textbox "Employment status Employment status" [ref=e94]
+                - alert [ref=e95]
+              - generic [ref=e97]:
+                - generic [ref=e100]:
+                  - generic: Second salary
+                  - textbox "Second salary Second salary" [ref=e101]
+                - alert [ref=e102]
+            - generic [ref=e104]:
+              - heading "Health insurance data" [level=3] [ref=e105]
+              - generic [ref=e106]:
+                - generic [ref=e108]:
+                  - checkbox "No SSN" [ref=e112] [cursor=pointer]
+                  - generic [ref=e113] [cursor=pointer]: No SSN
+                - alert [ref=e114]
+              - generic [ref=e116]:
+                - generic [ref=e119]:
+                  - generic: SSN
+                  - textbox "SSN SSN" [ref=e120]
+                - alert [ref=e121]
+              - generic [ref=e123]:
+                - generic [ref=e126]:
+                  - generic: Place of birth
+                  - textbox "Place of birth Place of birth" [ref=e127]
+                - alert [ref=e128]
+              - generic [ref=e130]:
+                - generic [ref=e133]:
+                  - generic: Birth name
+                  - textbox "Birth name Birth name" [ref=e134]
+                - alert [ref=e135]
+              - generic [ref=e137]:
+                - generic [ref=e140]:
+                  - generic: Health insurance type
+                  - textbox "Health insurance type Health insurance type" [ref=e141]
+                - alert [ref=e142]
+              - generic [ref=e144]:
+                - generic [ref=e147]:
+                  - generic: Health insurance
+                  - textbox "Health insurance Health insurance" [ref=e148]
+                - alert [ref=e149]
+              - generic [ref=e151]:
+                - generic [ref=e154]:
+                  - generic: Desired health insurance company
+                  - textbox "Desired health insurance company Desired health insurance company" [ref=e155]
+                - alert [ref=e156]
+              - generic [ref=e158]:
+                - generic [ref=e161]:
+                  - generic: Private health insurance name
+                  - textbox "Private health insurance name Private health insurance name" [ref=e162]
+                - alert [ref=e163]
+              - generic [ref=e165]:
+                - generic [ref=e168]:
+                  - generic: Private health insurance contribution
+                  - textbox "Private health insurance contribution Private health insurance contribution" [ref=e169]
+                - alert [ref=e170]
+              - generic [ref=e172]:
+                - generic [ref=e175]:
+                  - generic: Private nursing insurance contribution
+                  - textbox "Private nursing insurance contribution Private nursing insurance contribution" [ref=e176]
+                - alert [ref=e177]
+              - generic [ref=e179]:
+                - generic [ref=e182]:
+                  - generic: Last private health insurance
+                  - textbox "Last private health insurance Last private health insurance" [ref=e183]
+                - alert [ref=e184]
+              - generic [ref=e186]:
+                - generic [ref=e188]:
+                  - checkbox "Request from pension insurance" [ref=e192] [cursor=pointer]
+                  - generic [ref=e193] [cursor=pointer]: Request from pension insurance
+                - alert [ref=e194]
+              - generic [ref=e196]:
+                - generic [ref=e197]:
+                  - generic [ref=e198]: Do you have children?
+                  - radiogroup "Do you have children?" [ref=e199]:
+                    - generic [ref=e200]:
+                      - generic [ref=e202]:
+                        - generic [ref=e203]: 󰐽
+                        - radio "Yes" [ref=e204] [cursor=pointer]
+                      - generic [ref=e205] [cursor=pointer]: "Yes"
+                    - generic [ref=e206]:
+                      - generic [ref=e208]:
+                        - generic [ref=e209]: 󰐽
+                        - radio "No" [ref=e210] [cursor=pointer]
+                      - generic [ref=e211] [cursor=pointer]: "No"
+                - alert [ref=e212]
+          - generic [ref=e215]:
+            - button "Save" [disabled]:
+              - generic: Save
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e216]:
+    - button "Toggle Nuxt DevTools" [ref=e217] [cursor=pointer]:
+      - img [ref=e218]
+    - generic "Page load time" [ref=e221]:
+      - generic [ref=e222]: "121"
+      - generic [ref=e223]: ms
+    - button "Toggle Component Inspector" [ref=e225] [cursor=pointer]:
+      - img [ref=e226]
+```
