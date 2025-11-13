@@ -1,8 +1,8 @@
 <template>
-  <div class="personal-page">
+  <div class="bank-page">
     <div class="form-container">
-      <PersonalForm
-        :form-data="formData"
+      <BankDataForm
+        :form-data="{ bankDetail: formData.bankDetail }"
         :is-loading="isSubmitting"
         :error="submitError"
         :success="submitSuccess"
@@ -18,7 +18,7 @@ import { ref } from "vue"
 import { useMe } from "~/composables/useMe"
 import { useFormValidation } from "~/composables/useFormValidation"
 import { useFormData } from "~/composables/useFormData"
-import PersonalForm from "~/components/PersonalForm.vue"
+import BankDataForm from "~/components/BankDataForm.vue"
 
 // Set layout
 definePageMeta({
@@ -35,7 +35,7 @@ const { validatePayload } = useFormValidation()
 /**
  * Use composable to manage form data state and updates
  */
-const { formData, handlePersonalUpdate } = useFormData(userData)
+const { formData, handleBankUpdate } = useFormData(userData)
 
 /**
  * Page-level submission state
@@ -48,7 +48,7 @@ const submitSuccess = ref(false)
  * Handle form updates
  */
 function handleUpdate(updates: Record<string, unknown>) {
-  handlePersonalUpdate(updates)
+  handleBankUpdate(updates)
 }
 
 /**
@@ -68,22 +68,14 @@ async function handleFormSubmit() {
 
   try {
     const payload = {
-      firstName: formData.firstName,
-      academicTitle: formData.academicTitle,
-      gender: formData.gender,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      position: formData.position,
-      country: formData.country,
-      zip: formData.zip,
-      state: formData.state,
-      city: formData.city,
-      address: formData.address,
+      bankDetail: formData.bankDetail,
     }
 
     // Validate payload against schema
-    const validationResult = await validatePayload(null, payload)
+    const validationResult = await validatePayload(
+      "bankDetail",
+      formData.bankDetail
+    )
 
     if (!validationResult.success) {
       submitError.value =
@@ -113,3 +105,9 @@ async function handleFormSubmit() {
   }
 }
 </script>
+
+<style scoped>
+/**
+ * Bank page styling
+ */
+</style>

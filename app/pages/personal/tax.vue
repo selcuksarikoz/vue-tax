@@ -1,8 +1,8 @@
 <template>
-  <div class="personal-page">
+  <div class="tax-page">
     <div class="form-container">
-      <PersonalForm
-        :form-data="formData"
+      <TaxDataForm
+        :form-data="{ tax: formData.tax, insurance: formData.insurance }"
         :is-loading="isSubmitting"
         :error="submitError"
         :success="submitSuccess"
@@ -18,7 +18,7 @@ import { ref } from "vue"
 import { useMe } from "~/composables/useMe"
 import { useFormValidation } from "~/composables/useFormValidation"
 import { useFormData } from "~/composables/useFormData"
-import PersonalForm from "~/components/PersonalForm.vue"
+import TaxDataForm from "~/components/TaxDataForm.vue"
 
 // Set layout
 definePageMeta({
@@ -35,7 +35,7 @@ const { validatePayload } = useFormValidation()
 /**
  * Use composable to manage form data state and updates
  */
-const { formData, handlePersonalUpdate } = useFormData(userData)
+const { formData, handleTaxUpdate } = useFormData(userData)
 
 /**
  * Page-level submission state
@@ -48,7 +48,7 @@ const submitSuccess = ref(false)
  * Handle form updates
  */
 function handleUpdate(updates: Record<string, unknown>) {
-  handlePersonalUpdate(updates)
+  handleTaxUpdate(updates)
 }
 
 /**
@@ -68,22 +68,23 @@ async function handleFormSubmit() {
 
   try {
     const payload = {
-      firstName: formData.firstName,
-      academicTitle: formData.academicTitle,
-      gender: formData.gender,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      position: formData.position,
-      country: formData.country,
-      zip: formData.zip,
-      state: formData.state,
-      city: formData.city,
-      address: formData.address,
+      tax: formData.tax,
+      insurance: formData.insurance,
     }
 
-    // Validate payload against schema
-    const validationResult = await validatePayload(null, payload)
+    // Validate both tax and insurance
+    const taxValidation = await validatePayload("tax", formData.tax)
+    const insuranceValidation = await validatePayload(
+      "insurance",
+      formData.insurance
+    )
+    const validationResult = {
+      success: taxValidation.success && insuranceValidation.success,
+      errors: [
+        ...(taxValidation.errors || []),
+        ...(insuranceValidation.errors || []),
+      ],
+    }
 
     if (!validationResult.success) {
       submitError.value =
@@ -113,3 +114,9 @@ async function handleFormSubmit() {
   }
 }
 </script>
+
+<style scoped>
+/**
+ * Tax page styling
+ */
+</style>
