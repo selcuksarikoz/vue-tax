@@ -17,7 +17,7 @@ export default defineConfig({
     globals: true,
     environment: "happy-dom",
     coverage: {
-      provider: "c8",
+      provider: "v8",
       reporter: ["text", "json", "html"],
       lines: 80,
       functions: 80,

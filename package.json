@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@nuxt/eslint": "1.10.0",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@mdi/font": "^7.4.47",
     "@nuxt/fonts": "^0.12.1",
+    "@vitest/coverage-v8": "4.0.8",
     "@vitest/ui": "^4.0.8",
     "@vue/test-utils": "^2.4.6",
     "c8": "^10.1.3",
